@@ -299,8 +299,23 @@ export async function createSalesOrder(input: CreateSalesOrderInput) {
 
   // 3. Generate unique order number: SO-YYYYMMDD-XXXX
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  const randSuffix = Math.floor(1000 + Math.random() * 9000);
-  const orderNumber = `SO-${today}-${randSuffix}`;
+  let orderNumber = '';
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const randSuffix = Math.floor(1000 + Math.random() * 9000);
+    const candidate = `SO-${today}-${randSuffix}`;
+    const [existing] = await db
+      .select({ id: salesOrders.id })
+      .from(salesOrders)
+      .where(eq(salesOrders.orderNumber, candidate))
+      .limit(1);
+    if (!existing) {
+      orderNumber = candidate;
+      break;
+    }
+  }
+  if (!orderNumber) {
+    orderNumber = `SO-${today}-${Math.floor(1000 + Math.random() * 9000)}`;
+  }
 
   return await db.transaction(async (tx) => {
     const [order] = await tx

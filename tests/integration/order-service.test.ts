@@ -12,7 +12,6 @@ import {
 } from '@/db/schema';
 import {
   createSalesOrder,
-  updateDraftOrder,
   confirmSalesOrder,
   pickSalesOrder,
   packSalesOrder,

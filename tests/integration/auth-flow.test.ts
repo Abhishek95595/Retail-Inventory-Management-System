@@ -93,4 +93,58 @@ describe('RIMS Authentication & Credentials Flow Integration Tests', () => {
 
     expect(user).toBeNull();
   });
+
+  describe('Mid-Session Deactivation & Role Change Verification', () => {
+    it('verifyUserSession reflects real-time DB state and rejects deactivated account during existing session', async () => {
+      const { verifyUserSession } = await import('@/server/auth');
+
+      // Fetch user from DB
+      const [dbUser] = await db
+        .select()
+        .from(schema.users)
+        .where(eq(schema.users.email, activeEmail))
+        .limit(1);
+
+      expect(dbUser).toBeDefined();
+
+      const existingJwtUser = {
+        id: dbUser.id,
+        email: dbUser.email,
+        name: `${dbUser.firstName} ${dbUser.lastName}`,
+        role: 'INVENTORY_MANAGER' as const,
+        isActive: true,
+      };
+
+      // 1. Verify active session succeeds
+      const authUser1 = await verifyUserSession(existingJwtUser);
+      expect(authUser1.id).toBe(dbUser.id);
+      expect(authUser1.role).toBe('INVENTORY_MANAGER');
+      expect(authUser1.isActive).toBe(true);
+
+      // 2. Change role in database (e.g. demote to WAREHOUSE_STAFF)
+      await db
+        .update(schema.users)
+        .set({ role: 'WAREHOUSE_STAFF', updatedAt: new Date() })
+        .where(eq(schema.users.id, dbUser.id));
+
+      // verifyUserSession must return the updated live role, not the stale JWT role
+      const authUser2 = await verifyUserSession(existingJwtUser);
+      expect(authUser2.role).toBe('WAREHOUSE_STAFF');
+
+      // 3. Deactivate user in database mid-session
+      await db
+        .update(schema.users)
+        .set({ isActive: false, updatedAt: new Date() })
+        .where(eq(schema.users.id, dbUser.id));
+
+      // verifyUserSession must now throw ACCOUNT_DEACTIVATED immediately
+      await expect(verifyUserSession(existingJwtUser)).rejects.toThrow('ACCOUNT_DEACTIVATED');
+
+      // Restore user to active and original role for cleanup
+      await db
+        .update(schema.users)
+        .set({ isActive: true, role: 'INVENTORY_MANAGER', updatedAt: new Date() })
+        .where(eq(schema.users.id, dbUser.id));
+    });
+  });
 });

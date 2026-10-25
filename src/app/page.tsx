@@ -26,6 +26,12 @@ export default function HomePage() {
               Environment Ready
             </span>
             <Link
+              href="/login"
+              className="rounded-md bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 transition shadow-sm"
+            >
+              Sign In to Portal →
+            </Link>
+            <Link
               href="/api/health"
               className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm"
             >
@@ -54,6 +60,22 @@ export default function HomePage() {
                 architecture primitives, strict TypeScript bindings, Tailwind styling, Drizzle ORM
                 database access, and testing suites are verified.
               </p>
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <Link
+                  href="/app"
+                  className="inline-flex items-center space-x-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 transition"
+                >
+                  <span>Launch Operational Portal</span>
+                  <span>→</span>
+                </Link>
+                <Link
+                  href="/login"
+                  className="inline-flex items-center space-x-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition"
+                >
+                  <span>Sign In</span>
+                </Link>
+              </div>
+
               <div className="mt-6 flex flex-wrap gap-4">
                 <div className="flex items-center space-x-2 rounded-lg bg-slate-100 px-3 py-2 text-xs font-mono text-slate-700">
                   <Terminal className="h-4 w-4 text-slate-500" />

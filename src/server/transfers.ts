@@ -272,8 +272,23 @@ export async function createTransfer(input: CreateTransferInput) {
 
   // 3. Generate unique human-readable transfer number: TRF-YYYYMMDD-XXXX
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  const randSuffix = Math.floor(1000 + Math.random() * 9000);
-  const transferNumber = `TRF-${today}-${randSuffix}`;
+  let transferNumber = '';
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const randSuffix = Math.floor(1000 + Math.random() * 9000);
+    const candidate = `TRF-${today}-${randSuffix}`;
+    const [existing] = await db
+      .select({ id: stockTransfers.id })
+      .from(stockTransfers)
+      .where(eq(stockTransfers.transferNumber, candidate))
+      .limit(1);
+    if (!existing) {
+      transferNumber = candidate;
+      break;
+    }
+  }
+  if (!transferNumber) {
+    transferNumber = `TRF-${today}-${Math.floor(1000 + Math.random() * 9000)}`;
+  }
 
   return await db.transaction(async (tx) => {
     const [transfer] = await tx

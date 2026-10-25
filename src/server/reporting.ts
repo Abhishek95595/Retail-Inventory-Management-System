@@ -49,6 +49,15 @@ export interface DashboardMetrics {
     itemCount: number;
     totalQuantityReceived: string;
   }>;
+  warehouseSummaries?: Array<{
+    id: string;
+    name: string;
+    code: string;
+    productCount: number;
+    onHandQty: string;
+    availableQty: string;
+    valuation: string;
+  }>;
 }
 
 export interface InventoryReportRow {
@@ -256,6 +265,24 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     .orderBy(desc(goodsReceipts.receivedAt))
     .limit(5);
 
+  // 9. Aggregate warehouse summaries for multi-facility overview
+  const warehouseSummariesRaw = await db
+    .select({
+      id: warehouses.id,
+      name: warehouses.name,
+      code: warehouses.code,
+      productCount: sql<number>`coalesce(count(distinct ${inventoryBalances.productId}), 0)::int`,
+      onHandQty: sql<string>`coalesce(sum(${inventoryBalances.onHandQty}), 0)::text`,
+      availableQty: sql<string>`coalesce(sum(${inventoryBalances.availableQty}), 0)::text`,
+      valuation: sql<string>`coalesce(sum(${inventoryBalances.onHandQty} * ${products.costPrice}), 0)::text`,
+    })
+    .from(warehouses)
+    .leftJoin(inventoryBalances, eq(warehouses.id, inventoryBalances.warehouseId))
+    .leftJoin(products, eq(inventoryBalances.productId, products.id))
+    .where(eq(warehouses.isActive, true))
+    .groupBy(warehouses.id)
+    .orderBy(warehouses.name);
+
   return {
     counts: {
       activeProducts: activeProducts || 0,
@@ -289,6 +316,15 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
       receivedAt: r.receivedAt,
       itemCount: 0,
       totalQuantityReceived: '0.00',
+    })),
+    warehouseSummaries: warehouseSummariesRaw.map((w) => ({
+      id: w.id,
+      name: w.name,
+      code: w.code,
+      productCount: w.productCount,
+      onHandQty: Number(w.onHandQty).toFixed(2),
+      availableQty: Number(w.availableQty).toFixed(2),
+      valuation: Number(w.valuation).toFixed(2),
     })),
   };
 }

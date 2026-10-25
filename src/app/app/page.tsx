@@ -67,6 +67,19 @@ export default async function AppDashboardPage() {
             </div>
           </div>
 
+          {/* Metric Load Failure Alert */}
+          {canReadReports && !metrics && (
+            <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-800 flex items-center space-x-3">
+              <AlertTriangle className="h-5 w-5 text-rose-600 shrink-0" />
+              <div>
+                <p className="font-bold">Unable to load aggregated operational metrics.</p>
+                <p className="mt-0.5 text-rose-700">
+                  Please verify database connectivity and reporting service permissions.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* KPI Cards Row */}
           {metrics && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -385,6 +398,79 @@ export default async function AppDashboardPage() {
                     ))}
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Multi-Warehouse Operational Summaries */}
+          {metrics && metrics.warehouseSummaries && metrics.warehouseSummaries.length > 0 && (
+            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <div>
+                  <h2 className="text-base font-bold text-slate-900">
+                    Inventory Summaries by Warehouse
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Live valuation and stock availability across active logistics facilities
+                  </p>
+                </div>
+                <Link
+                  href="/warehouses"
+                  className="text-xs font-semibold text-emerald-600 hover:text-emerald-700"
+                >
+                  Manage Warehouses →
+                </Link>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-slate-600 border-b border-slate-200">
+                    <tr>
+                      <th className="py-2.5 px-3">Warehouse Facility</th>
+                      <th className="py-2.5 px-3">Code</th>
+                      <th className="py-2.5 px-3 text-right">Active SKUs</th>
+                      <th className="py-2.5 px-3 text-right">Physical On-Hand</th>
+                      <th className="py-2.5 px-3 text-right">Net Available</th>
+                      <th className="py-2.5 px-3 text-right">Stock Valuation</th>
+                      <th className="py-2.5 px-3 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {metrics.warehouseSummaries.map((wh) => (
+                      <tr key={wh.id} className="hover:bg-slate-50 transition">
+                        <td className="py-3 px-3 font-semibold text-slate-900">
+                          <Link
+                            href={`/warehouses/${wh.id}`}
+                            className="hover:text-emerald-600 transition"
+                          >
+                            {wh.name}
+                          </Link>
+                        </td>
+                        <td className="py-3 px-3 font-mono text-slate-600">{wh.code}</td>
+                        <td className="py-3 px-3 text-right font-mono font-medium text-slate-700">
+                          {wh.productCount}
+                        </td>
+                        <td className="py-3 px-3 text-right font-mono font-medium text-slate-900">
+                          {wh.onHandQty}
+                        </td>
+                        <td className="py-3 px-3 text-right font-mono font-bold text-emerald-700">
+                          {wh.availableQty}
+                        </td>
+                        <td className="py-3 px-3 text-right font-mono font-bold text-slate-900">
+                          ${wh.valuation}
+                        </td>
+                        <td className="py-3 px-3 text-right">
+                          <Link
+                            href={`/inventory?warehouseId=${wh.id}`}
+                            className="text-[11px] font-semibold text-emerald-600 hover:text-emerald-700 underline"
+                          >
+                            View Stock
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}

@@ -25,16 +25,10 @@ export async function getCurrentUser(): Promise<AuthenticatedUser | null> {
 }
 
 /**
- * Strict server-side helper requiring an authenticated and active user.
- * Throws an error or returns the user.
+ * Validates an authenticated user session directly against the database in real-time.
+ * Guarantees that deactivated accounts or changed roles are immediately enforced.
  */
-export async function requireAuth(): Promise<AuthenticatedUser> {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error('UNAUTHORIZED');
-  }
-
-  // Live database verification to ensure account has not been deactivated or deleted mid-session
+export async function verifyUserSession(user: AuthenticatedUser): Promise<AuthenticatedUser> {
   const [dbUser] = await db
     .select({
       id: users.id,
@@ -54,6 +48,19 @@ export async function requireAuth(): Promise<AuthenticatedUser> {
     role: dbUser.role as UserRole,
     isActive: dbUser.isActive,
   };
+}
+
+/**
+ * Strict server-side helper requiring an authenticated and active user.
+ * Throws an error or returns the user.
+ */
+export async function requireAuth(): Promise<AuthenticatedUser> {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error('UNAUTHORIZED');
+  }
+
+  return verifyUserSession(user);
 }
 
 /**

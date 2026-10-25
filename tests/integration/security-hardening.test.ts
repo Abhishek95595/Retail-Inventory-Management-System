@@ -1,10 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import { db } from '@/db';
-import { warehouses, categories, products, inventoryBalances, auditLogs, users } from '@/db/schema';
+import { warehouses, categories, products, inventoryBalances, auditLogs } from '@/db/schema';
 import { getAuditLogs, exportInventoryReportCsv } from '@/server/reporting';
-import { requireAuth, requirePermission } from '@/server/auth';
-import { PERMISSIONS, UserRole, hasPermission } from '@/lib/permissions';
-import { eq, inArray } from 'drizzle-orm';
+import { UserRole, hasPermission } from '@/lib/permissions';
+import { eq } from 'drizzle-orm';
 
 const mockUser: {
   id: string;
@@ -131,14 +130,6 @@ describe('RIMS Phase 11: Security Audit & Hardening Regression Tests', () => {
   });
 
   describe('1. Role Authorization Matrix (Least Privilege & Deny-by-Default)', () => {
-    const roles: UserRole[] = [
-      'ADMIN',
-      'INVENTORY_MANAGER',
-      'WAREHOUSE_STAFF',
-      'SALES_REP',
-      'AUDITOR',
-    ];
-
     it('denies audit review access to WAREHOUSE_STAFF and SALES_REP', async () => {
       for (const role of ['WAREHOUSE_STAFF', 'SALES_REP'] as UserRole[]) {
         mockUser.role = role;
