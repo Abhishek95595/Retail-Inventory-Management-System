@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, index, type AnyPgColumn } from 'drizzle-orm/pg-core';
 
 export const categories = pgTable(
   'categories',
@@ -7,7 +7,7 @@ export const categories = pgTable(
     name: text('name').notNull(),
     code: text('code').notNull().unique(),
     description: text('description'),
-    parentId: uuid('parent_id').references((): any => categories.id, {
+    parentId: uuid('parent_id').references((): AnyPgColumn => categories.id, {
       onDelete: 'restrict',
     }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
