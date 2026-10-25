@@ -3,7 +3,15 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Boxes, FolderTree, LogOut, LayoutDashboard, Shield } from 'lucide-react';
+import {
+  Boxes,
+  FolderTree,
+  LogOut,
+  LayoutDashboard,
+  Shield,
+  Warehouse,
+  PackageSearch,
+} from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
 interface AppHeaderProps {
@@ -21,6 +29,8 @@ export function AppHeader({ user }: AppHeaderProps) {
     { name: 'Dashboard', href: '/app', icon: LayoutDashboard },
     { name: 'Products', href: '/products', icon: Boxes },
     { name: 'Categories', href: '/categories', icon: FolderTree },
+    { name: 'Warehouses', href: '/warehouses', icon: Warehouse },
+    { name: 'Inventory Balances', href: '/inventory', icon: PackageSearch },
   ];
 
   return (
@@ -34,7 +44,7 @@ export function AppHeader({ user }: AppHeaderProps) {
             <div>
               <span className="text-base font-bold tracking-tight text-slate-900">RIMS</span>
               <span className="hidden sm:inline-block ml-2 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800">
-                Phase 4 Catalog
+                Phase 5 Warehouses
               </span>
             </div>
           </Link>

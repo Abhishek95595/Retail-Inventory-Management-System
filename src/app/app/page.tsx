@@ -69,13 +69,13 @@ export default async function AppDashboardPage() {
             </div>
           </div>
 
-          {/* Phase 3 Boundary Notice */}
+          {/* Phase 5 Boundary Notice */}
           <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
-            <h3 className="text-sm font-semibold text-slate-700">Phase 3 Scope Completed</h3>
+            <h3 className="text-sm font-semibold text-slate-700">Phase 5 Scope Completed</h3>
             <p className="text-xs text-slate-500 mt-1 max-w-xl mx-auto">
-              Authentication, session tokens, Argon2id encryption, and server-side RBAC guards are
-              active. Product catalog CRUD and warehouse inventory operations remain scheduled for
-              Phase 4+.
+              Multi-site warehouse facilities, operational status management, and live inventory
+              balance tracking are active. Stock movements, adjustments, and receipts remain
+              scheduled for Phase 6.
             </p>
           </div>
         </div>

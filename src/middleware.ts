@@ -43,6 +43,7 @@ export const config = {
     '/app/:path*',
     '/products/:path*',
     '/categories/:path*',
+    '/warehouses/:path*',
     '/admin/:path*',
     '/inventory/:path*',
     '/orders/:path*',

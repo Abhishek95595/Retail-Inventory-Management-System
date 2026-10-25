@@ -1,6 +1,6 @@
 # Retail Inventory Management System (RIMS)
 
-### Agile Capstone Case Study — Phase 4: Product Catalog & Category Management
+### Agile Capstone Case Study — Phase 5: Warehouse Management & Inventory Balances
 
 A production-grade retail inventory management system built with **Next.js App Router**, **TypeScript**, **PostgreSQL**, **Drizzle ORM**, **Auth.js (NextAuth)**, **Argon2id**, **Tailwind CSS**, **Vitest**, and **Playwright**.
 
@@ -10,15 +10,15 @@ A production-grade retail inventory management system built with **Next.js App R
 
 RIMS is designed to solve retail multi-warehouse inventory tracking, procurement, order fulfillment, and audit governance through 8 Epics and 15 Sprints.
 
-**Current State: Phase 4 Completed (Product Catalog & Category Management)**
+**Current State: Phase 5 Completed (Warehouse Management & Inventory Balances)**
 
-- Hierarchical category management with recursive cycle prevention and product count indexing.
-- Master product catalog with SKU/barcode uniqueness, non-negative pricing checks, and soft-archiving.
-- Complete pagination, multi-column search, category filtering, and allowlist sorting.
-- Comprehensive immutable audit logging on category and product lifecycle operations.
-- Role-Based Access Control enforcing `catalog:read` for viewing and `catalog:manage` for mutations.
-- Accessible, responsive UI forms and data grids using Tailwind CSS.
-- Automated tests across Vitest (unit & integration) and Playwright browser E2E workflows.
+- Multi-site warehouse facilities management with operational status activation/deactivation and deletion protection.
+- Live inventory balance visibility strictly maintaining PostgreSQL generated invariant: `Available = On-Hand - Reserved - Quarantined`.
+- Read-only multi-criteria inventory ledger with warehouse, product, and category filters.
+- Per-warehouse stock balance breakdown integrated directly onto product detail views.
+- Strict RBAC enforcement using `warehouse:read`, `warehouse:manage`, and `inventory:read`.
+- Transactional audit logging for warehouse facility lifecycle events.
+- Complete automated test suite covering Vitest integration tests and Playwright E2E browser scenarios.
 
 ---
 

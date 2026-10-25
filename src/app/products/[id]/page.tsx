@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { requireAuth } from '@/server/auth';
 import { getProductById } from '@/server/products';
+import { getProductInventoryBalances } from '@/server/inventory';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
 import { AppHeader } from '@/components/AppHeader';
 import { Boxes, ArrowLeft, Edit, Tag, Truck, RotateCcw } from 'lucide-react';
@@ -21,6 +22,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
   }
 
   const canManage = hasPermission(user.role, PERMISSIONS.CATALOG_MANAGE);
+  const warehouseBalances = await getProductInventoryBalances(product.id);
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
@@ -151,6 +153,99 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
                 Batch Order Qty: {product.reorderQuantity} {product.uom}
               </p>
             </div>
+          </div>
+
+          {/* Per-Facility Inventory Balances */}
+          <div className="mt-8 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">
+                  Per-Facility Inventory Balances
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Stock availability across all active storage warehouses.
+                </p>
+              </div>
+              <Link
+                href={`/inventory?productId=${product.id}`}
+                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
+              >
+                View in Inventory Ledger →
+              </Link>
+            </div>
+
+            {warehouseBalances.length === 0 ? (
+              <div className="p-8 text-center text-xs text-slate-500">
+                No inventory balances currently recorded for this product across any warehouse.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
+                  <thead className="bg-slate-50 text-slate-600 uppercase font-semibold tracking-wider">
+                    <tr>
+                      <th scope="col" className="px-4 py-3">
+                        Warehouse Facility
+                      </th>
+                      <th scope="col" className="px-4 py-3 text-right">
+                        On-Hand
+                      </th>
+                      <th scope="col" className="px-4 py-3 text-right">
+                        Reserved
+                      </th>
+                      <th scope="col" className="px-4 py-3 text-right">
+                        Quarantined
+                      </th>
+                      <th scope="col" className="px-4 py-3 text-right font-bold text-emerald-800">
+                        Available
+                      </th>
+                      <th scope="col" className="px-4 py-3">
+                        Facility Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 bg-white">
+                    {warehouseBalances.map((bal) => (
+                      <tr key={bal.id} className="hover:bg-slate-50 transition">
+                        <td className="px-4 py-3 font-semibold text-slate-900">
+                          <Link
+                            href={`/warehouses/${bal.warehouseId}`}
+                            className="hover:text-emerald-600 hover:underline"
+                          >
+                            {bal.warehouseName}
+                          </Link>
+                          <span className="block font-mono text-[10px] text-slate-500 uppercase">
+                            {bal.warehouseCode}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right font-mono font-medium text-slate-900">
+                          {parseFloat(bal.onHandQty).toLocaleString()} {product.uom}
+                        </td>
+                        <td className="px-4 py-3 text-right font-mono text-amber-700">
+                          {parseFloat(bal.reservedQty).toLocaleString()}
+                        </td>
+                        <td className="px-4 py-3 text-right font-mono text-slate-500">
+                          {parseFloat(bal.quarantinedQty).toLocaleString()}
+                        </td>
+                        <td className="px-4 py-3 text-right font-mono font-bold text-emerald-700 bg-emerald-50/50">
+                          {parseFloat(bal.availableQty).toLocaleString()} {product.uom}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              bal.warehouseIsActive
+                                ? 'bg-emerald-50 text-emerald-700'
+                                : 'bg-slate-100 text-slate-600'
+                            }`}
+                          >
+                            {bal.warehouseIsActive ? 'Active' : 'Inactive'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </main>
