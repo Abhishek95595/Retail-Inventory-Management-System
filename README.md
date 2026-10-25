@@ -1,6 +1,6 @@
 # Retail Inventory Management System (RIMS)
 
-### Agile Capstone Case Study — Phase 3: Authentication, Session Management & RBAC
+### Agile Capstone Case Study — Phase 4: Product Catalog & Category Management
 
 A production-grade retail inventory management system built with **Next.js App Router**, **TypeScript**, **PostgreSQL**, **Drizzle ORM**, **Auth.js (NextAuth)**, **Argon2id**, **Tailwind CSS**, **Vitest**, and **Playwright**.
 
@@ -10,13 +10,15 @@ A production-grade retail inventory management system built with **Next.js App R
 
 RIMS is designed to solve retail multi-warehouse inventory tracking, procurement, order fulfillment, and audit governance through 8 Epics and 15 Sprints.
 
-**Current State: Phase 3 Completed (Authentication, Sessions & RBAC)**
+**Current State: Phase 4 Completed (Product Catalog & Category Management)**
 
-- Secure credentials authentication powered by **Argon2id** password hashing.
-- Encrypted JWT session cookies with mid-session account revocation guards.
-- Centralized Role-Based Access Control (RBAC) across all 5 roles: `ADMIN`, `INVENTORY_MANAGER`, `WAREHOUSE_STAFF`, `SALES_REP`, `AUDITOR`.
-- Route protection middleware and server-side data guards (`requireAuth`, `requirePermission`).
-- Full automated test coverage with Vitest unit/integration tests and Playwright browser E2E workflows.
+- Hierarchical category management with recursive cycle prevention and product count indexing.
+- Master product catalog with SKU/barcode uniqueness, non-negative pricing checks, and soft-archiving.
+- Complete pagination, multi-column search, category filtering, and allowlist sorting.
+- Comprehensive immutable audit logging on category and product lifecycle operations.
+- Role-Based Access Control enforcing `catalog:read` for viewing and `catalog:manage` for mutations.
+- Accessible, responsive UI forms and data grids using Tailwind CSS.
+- Automated tests across Vitest (unit & integration) and Playwright browser E2E workflows.
 
 ---
 
@@ -77,10 +79,31 @@ npm run dev
 - Public Landing: [http://localhost:3000](http://localhost:3000)
 - Sign-In Portal: [http://localhost:3000/login](http://localhost:3000/login)
 - Authenticated Dashboard: [http://localhost:3000/app](http://localhost:3000/app)
+- Products Catalog: [http://localhost:3000/products](http://localhost:3000/products)
+- Categories Directory: [http://localhost:3000/categories](http://localhost:3000/categories)
 
 ---
 
-## 3. Development & Testing Scripts
+## 3. Implemented Routes & API Endpoints
+
+| View / Endpoint         |       Method       | Required Permission               | Description                                                   |
+| :---------------------- | :----------------: | :-------------------------------- | :------------------------------------------------------------ |
+| `/products`             |        GET         | `catalog:read`                    | Master product catalog with search, filtering, and pagination |
+| `/products/new`         |        GET         | `catalog:manage`                  | Product creation form                                         |
+| `/products/[id]`        |        GET         | `catalog:read`                    | Detailed product overview view                                |
+| `/products/[id]/edit`   |        GET         | `catalog:manage`                  | Product editing and soft-archiving form                       |
+| `/categories`           |        GET         | `catalog:read`                    | Hierarchical categories directory with product counts         |
+| `/categories/new`       |        GET         | `catalog:manage`                  | Category creation form                                        |
+| `/categories/[id]/edit` |        GET         | `catalog:manage`                  | Category editing form with hierarchy protection               |
+| `/api/products`         |        GET         | `catalog:read`                    | Paginated product search API                                  |
+| `/api/products`         |        POST        | `catalog:manage`                  | Product creation API                                          |
+| `/api/products/[id]`    | GET / PUT / DELETE | `catalog:read` / `catalog:manage` | Retrieve, update, or soft-archive product                     |
+| `/api/categories`       |     GET / POST     | `catalog:read` / `catalog:manage` | Retrieve categories list or create category                   |
+| `/api/categories/[id]`  | GET / PUT / DELETE | `catalog:read` / `catalog:manage` | Retrieve, update, or delete category                          |
+
+---
+
+## 4. Development & Testing Scripts
 
 | Script                  | Purpose                                                   |
 | :---------------------- | :-------------------------------------------------------- |
@@ -100,7 +123,7 @@ npm run dev
 
 ---
 
-## 4. Role-Based Access Control (RBAC) Matrix
+## 5. Role-Based Access Control (RBAC) Matrix
 
 | Module / Operation      | Permission Key                 | Admin | Inventory Manager | Warehouse Staff  | Sales Rep | Auditor |
 | :---------------------- | :----------------------------- | :---: | :---------------: | :--------------: | :-------: | :-----: |
@@ -120,13 +143,3 @@ npm run dev
 | **Reports Read/Export** | `reports:*`                    |   ✓   |         ✓         |        -         |   Read    |    ✓    |
 | **User Administration** | `users:manage`, `roles:assign` |   ✓   |         -         |        -         |     -     |    -    |
 | **Audit Logs**          | `audit:read`                   |   ✓   |         ✓         |        -         |     -     |    ✓    |
-
----
-
-## 5. Architecture Documentation
-
-- [ADR-001: Next.js App Router Architecture](docs/architecture/ADR-001-nextjs-app-router.md)
-- [ADR-002: PostgreSQL & Drizzle ORM](docs/architecture/ADR-002-drizzle-postgresql.md)
-- [ADR-003: NextAuth JWT & Argon2id Security](docs/architecture/ADR-003-authentication-rbac.md)
-- [Database Schema Specification](docs/architecture/database-schema-spec.md)
-- [Developer Setup Guide](docs/development/setup.md)
