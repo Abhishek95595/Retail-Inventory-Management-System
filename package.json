@@ -20,14 +20,17 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:check": "node --loader tsx src/db/check-connection.ts"
+    "db:check": "node --loader tsx src/db/check-connection.ts",
+    "db:seed:admin": "node --loader tsx src/db/seed-admin.ts"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.2.2",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.4",
     "lucide-react": "^0.469.0",
     "next": "^14.2.23",
+    "next-auth": "^4.24.15",
     "pg": "^8.13.1",
     "postgres": "^3.4.5",
     "react": "^18.3.1",
