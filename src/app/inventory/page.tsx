@@ -79,6 +79,13 @@ export default async function InventoryPage({ searchParams }: InventoryPageProps
               </code>
             </p>
           </div>
+
+          <Link
+            href="/inventory/movements"
+            className="inline-flex items-center space-x-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition"
+          >
+            <span>View Movement Ledger History →</span>
+          </Link>
         </div>
 
         {/* Filter Toolbar */}

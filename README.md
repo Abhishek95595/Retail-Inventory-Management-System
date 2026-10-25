@@ -1,6 +1,6 @@
 # Retail Inventory Management System (RIMS)
 
-### Agile Capstone Case Study — Phase 5: Warehouse Management & Inventory Balances
+### Agile Capstone Case Study — Phase 10: Operational Dashboards, Reporting & Audit Review
 
 A production-grade retail inventory management system built with **Next.js App Router**, **TypeScript**, **PostgreSQL**, **Drizzle ORM**, **Auth.js (NextAuth)**, **Argon2id**, **Tailwind CSS**, **Vitest**, and **Playwright**.
 
@@ -10,15 +10,14 @@ A production-grade retail inventory management system built with **Next.js App R
 
 RIMS is designed to solve retail multi-warehouse inventory tracking, procurement, order fulfillment, and audit governance through 8 Epics and 15 Sprints.
 
-**Current State: Phase 5 Completed (Warehouse Management & Inventory Balances)**
+**Current State: Phase 10 Completed (Operational Dashboards, Reporting & Audit Review)**
 
-- Multi-site warehouse facilities management with operational status activation/deactivation and deletion protection.
-- Live inventory balance visibility strictly maintaining PostgreSQL generated invariant: `Available = On-Hand - Reserved - Quarantined`.
-- Read-only multi-criteria inventory ledger with warehouse, product, and category filters.
-- Per-warehouse stock balance breakdown integrated directly onto product detail views.
-- Strict RBAC enforcement using `warehouse:read`, `warehouse:manage`, and `inventory:read`.
-- Transactional audit logging for warehouse facility lifecycle events.
-- Complete automated test suite covering Vitest integration tests and Playwright E2E browser scenarios.
+- **Operational Dashboard (`/app`)**: Real-time aggregate KPIs showing active catalog products and warehouses, defensible inventory valuation ($\sum \text{on\_hand} \times \text{cost\_price}$), low-stock alerts ($available \le reorder\_point$), zero stockouts, sales and purchase order lifecycle pipelines, recent stock movements, and latest supplier receipts.
+- **Inventory Valuation & Facility Reporting (`/reports`)**: Paginated multi-warehouse inventory reports filterable by warehouse facility, category, product/SKU search, low-stock threshold, and zero-stock conditions. Includes safe CSV export with formula injection sanitization (`=, +, -, @` prefixed with `'`).
+- **Immutable Audit Review Interface (`/audit-logs`)**: Read-only, tamper-evident audit inspection table restricted to authorized roles (`AUDIT_READ`), filterable by action, entity category, date range, and actor, featuring automatic redaction of sensitive parameters (`passwordHash`, `token`).
+- **Server-Side Authorization**: Enforced across API routes and server actions using granular permissions: `reports:read`, `reports:export`, and `audit:read`.
+- **Preserved System Invariants**: Uncompromised database generated column `available_qty = on_hand_qty - reserved_qty - quarantined_qty` and existing inventory transaction engines.
+- **Automated Verification**: Complete suite of 77 Vitest unit/integration tests and comprehensive Playwright E2E browser tests.
 
 ---
 
@@ -143,3 +142,32 @@ npm run dev
 | **Reports Read/Export** | `reports:*`                    |   ✓   |         ✓         |        -         |   Read    |    ✓    |
 | **User Administration** | `users:manage`, `roles:assign` |   ✓   |         -         |        -         |     -     |    -    |
 | **Audit Logs**          | `audit:read`                   |   ✓   |         ✓         |        -         |     -     |    ✓    |
+
+---
+
+## 6. Production Deployment Readiness & Operations
+
+### Production Environment Checklist
+
+1. **Environment Variables**:
+   - `NODE_ENV="production"`
+   - `DATABASE_URL`: Dedicated, firewalled PostgreSQL connection pooler (e.g. PgBouncer/Supabase/RDS).
+   - `NEXTAUTH_URL`: Canonical public HTTPS URL of the application.
+   - `NEXTAUTH_SECRET`: Strong 32-byte cryptographically random string (`openssl rand -base64 32`).
+2. **Database Migration Step**:
+   - Execute migrations separately prior to rolling traffic:
+     ```bash
+     npm run db:migrate
+     ```
+3. **Database Seeding Safeguard**:
+   - `npm run db:seed:admin` is blocked by default in production. Never seed default credentials to production environments.
+4. **Database Backup & Disaster Recovery Procedures**:
+   - **Full Database Dump**:
+     ```bash
+     pg_dump -Fc --no-acl --no-owner -h <DB_HOST> -U <DB_USER> -d <DB_NAME> -f rims_backup_$(date +%Y%m%d_%H%M%S).dump
+     ```
+   - **Database Restore**:
+     ```bash
+     pg_restore --clean --if-exists --no-acl --no-owner -h <DB_HOST> -U <DB_USER> -d <DB_NAME> rims_backup_<timestamp>.dump
+     ```
+   - _Note:_ Backups should be taken daily and stored in encrypted object storage with retention policies. Always perform restore dry-runs against isolated staging instances before executing production restores.

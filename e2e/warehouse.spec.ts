@@ -84,7 +84,7 @@ test.describe('RIMS Warehouse Management & Inventory Balances E2E Flows', () => 
   }) => {
     await loginAsAdmin(page);
 
-    await page.getByRole('link', { name: /Inventory Balances/i }).click();
+    await page.getByRole('link', { name: 'Inventory', exact: true }).click();
     await expect(page).toHaveURL(/\/inventory/);
 
     await expect(page.getByRole('heading', { name: /Inventory Balance Ledger/i })).toBeVisible();

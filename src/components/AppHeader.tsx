@@ -11,6 +11,12 @@ import {
   Shield,
   Warehouse,
   PackageSearch,
+  History,
+  ArrowLeftRight,
+  ShoppingCart,
+  Truck,
+  BarChart3,
+  FileCheck,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
@@ -30,7 +36,13 @@ export function AppHeader({ user }: AppHeaderProps) {
     { name: 'Products', href: '/products', icon: Boxes },
     { name: 'Categories', href: '/categories', icon: FolderTree },
     { name: 'Warehouses', href: '/warehouses', icon: Warehouse },
-    { name: 'Inventory Balances', href: '/inventory', icon: PackageSearch },
+    { name: 'Inventory', href: '/inventory', icon: PackageSearch },
+    { name: 'Orders', href: '/orders', icon: ShoppingCart },
+    { name: 'Purchasing', href: '/purchasing', icon: Truck },
+    { name: 'Transfers', href: '/transfers', icon: ArrowLeftRight },
+    { name: 'Reports', href: '/reports', icon: BarChart3 },
+    { name: 'Audit Log', href: '/audit-logs', icon: FileCheck },
+    { name: 'Movements', href: '/inventory/movements', icon: History },
   ];
 
   return (
@@ -44,7 +56,7 @@ export function AppHeader({ user }: AppHeaderProps) {
             <div>
               <span className="text-base font-bold tracking-tight text-slate-900">RIMS</span>
               <span className="hidden sm:inline-block ml-2 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800">
-                Phase 5 Warehouses
+                Phase 10 Operations & Reports
               </span>
             </div>
           </Link>

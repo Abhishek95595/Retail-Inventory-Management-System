@@ -9,6 +9,13 @@ const connectionString =
   process.env.DATABASE_URL || 'postgresql://postgres:postgres_dev_password@localhost:5432/rims_dev';
 
 async function seedAdmin() {
+  if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_PROD_SEED) {
+    console.error(
+      '⛔ FATAL: seed-admin cannot be executed in production without explicit ALLOW_PROD_SEED=true.'
+    );
+    process.exit(1);
+  }
+
   console.log('🌱 Starting safe development administrator seed...');
 
   const sql = postgres(connectionString, { max: 1 });

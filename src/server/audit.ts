@@ -5,7 +5,15 @@ export interface CreateAuditLogParams {
   actorId?: string | null;
   action: string;
   entityType:
-    'PRODUCT' | 'CATEGORY' | 'WAREHOUSE' | 'BALANCE' | 'USER' | 'ORDER' | 'PURCHASE_ORDER';
+    | 'PRODUCT'
+    | 'CATEGORY'
+    | 'WAREHOUSE'
+    | 'BALANCE'
+    | 'USER'
+    | 'ORDER'
+    | 'PURCHASE_ORDER'
+    | 'MOVEMENT'
+    | 'TRANSFER';
   entityId: string;
   oldValues?: Record<string, unknown> | null;
   newValues?: Record<string, unknown> | null;

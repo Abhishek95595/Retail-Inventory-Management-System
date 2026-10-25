@@ -1,0 +1,63 @@
+import React from 'react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { db } from '@/db';
+import { warehouses, products, suppliers } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import { AppHeader } from '@/components/AppHeader';
+import { PurchaseOrderForm } from '@/components/PurchaseOrderForm';
+
+export default async function NewPurchaseOrderPage() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    redirect('/login');
+  }
+
+  const [suppliersList, warehousesList, productsList] = await Promise.all([
+    db
+      .select({ id: suppliers.id, name: suppliers.name, code: suppliers.code })
+      .from(suppliers)
+      .where(eq(suppliers.isActive, true))
+      .orderBy(suppliers.name),
+    db
+      .select({ id: warehouses.id, name: warehouses.name, code: warehouses.code })
+      .from(warehouses)
+      .where(eq(warehouses.isActive, true))
+      .orderBy(warehouses.name),
+    db
+      .select({
+        id: products.id,
+        name: products.name,
+        sku: products.sku,
+        costPrice: products.costPrice,
+        uom: products.uom,
+      })
+      .from(products)
+      .where(eq(products.isArchived, false))
+      .orderBy(products.name),
+  ]);
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <AppHeader user={session.user} />
+
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            Create Purchase Order
+          </h1>
+          <p className="text-sm text-slate-500">
+            Issue a new draft purchase order to a supplier with itemized product lines.
+          </p>
+        </div>
+
+        <PurchaseOrderForm
+          suppliers={suppliersList}
+          warehouses={warehousesList}
+          products={productsList}
+        />
+      </main>
+    </div>
+  );
+}

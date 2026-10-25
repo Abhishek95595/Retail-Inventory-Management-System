@@ -166,12 +166,20 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
                   Stock availability across all active storage warehouses.
                 </p>
               </div>
-              <Link
-                href={`/inventory?productId=${product.id}`}
-                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
-              >
-                View in Inventory Ledger →
-              </Link>
+              <div className="flex items-center space-x-3">
+                <Link
+                  href={`/inventory/movements?productId=${product.id}`}
+                  className="text-xs font-semibold text-slate-600 hover:text-slate-900 hover:underline"
+                >
+                  View Movement History
+                </Link>
+                <Link
+                  href={`/inventory?productId=${product.id}`}
+                  className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
+                >
+                  View in Inventory Ledger →
+                </Link>
+              </div>
             </div>
 
             {warehouseBalances.length === 0 ? (

@@ -204,12 +204,20 @@ export default async function WarehouseDetailPage({ params }: { params: { id: st
                 Exact stock levels recorded at this specific storage location.
               </p>
             </div>
-            <Link
-              href={`/inventory?warehouseId=${warehouse.id}`}
-              className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
-            >
-              Open in Inventory Matrix →
-            </Link>
+            <div className="flex items-center space-x-3">
+              <Link
+                href={`/inventory/movements?warehouseId=${warehouse.id}`}
+                className="text-xs font-semibold text-slate-600 hover:text-slate-900 hover:underline"
+              >
+                View Facility Movement History
+              </Link>
+              <Link
+                href={`/inventory?warehouseId=${warehouse.id}`}
+                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
+              >
+                Open in Inventory Matrix →
+              </Link>
+            </div>
           </div>
 
           {balancesResult.items.length === 0 ? (
