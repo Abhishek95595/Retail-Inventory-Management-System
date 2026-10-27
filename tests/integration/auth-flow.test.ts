@@ -95,7 +95,7 @@ describe('RIMS Authentication & Credentials Flow Integration Tests', () => {
 
   describe('Mid-Session Deactivation & Role Change Verification', () => {
     it('verifyUserSession reflects real-time DB state and rejects deactivated account during existing session', async () => {
-      const { verifyUserSession } = await import('@/server/auth');
+      const { verifyUserSession } = await import('@/backend/server/auth');
 
       // Fetch user from DB
       const [dbUser] = await db
