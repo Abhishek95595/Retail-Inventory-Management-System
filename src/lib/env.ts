@@ -39,13 +39,46 @@ const envSchema = z
     }
   );
 
-function validateEnv() {
+export type Env = z.infer<typeof envSchema>;
+
+let cachedEnv: Env | undefined;
+
+export function validateEnv(): Env {
+  if (cachedEnv) {
+    return cachedEnv;
+  }
   const result = envSchema.safeParse(process.env);
   if (!result.success) {
     console.error('❌ Invalid or missing environment configuration:', result.error.format());
     throw new Error('Environment configuration validation failed');
   }
-  return result.data;
+  cachedEnv = result.data;
+  return cachedEnv;
 }
 
-export const env = validateEnv();
+export { envSchema };
+
+export const env: Env = new Proxy({} as Env, {
+  get(_target, prop: string | symbol) {
+    if (typeof prop === 'symbol') {
+      return undefined;
+    }
+    const validated = validateEnv();
+    return validated[prop as keyof Env];
+  },
+  has(_target, prop: string | symbol) {
+    if (typeof prop === 'symbol') {
+      return false;
+    }
+    const validated = validateEnv();
+    return prop in validated;
+  },
+  ownKeys(_target) {
+    const validated = validateEnv();
+    return Reflect.ownKeys(validated);
+  },
+  getOwnPropertyDescriptor(_target, prop: string | symbol) {
+    const validated = validateEnv();
+    return Reflect.getOwnPropertyDescriptor(validated, prop);
+  },
+});
