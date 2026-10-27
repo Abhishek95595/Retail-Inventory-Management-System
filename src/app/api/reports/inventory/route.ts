@@ -36,11 +36,15 @@ export async function GET(req: NextRequest) {
         { status: 400 }
       );
     }
-    if (error.message?.includes('Unauthorized')) {
-      return NextResponse.json({ message: error.message }, { status: 401 });
+    if (
+      error.message === 'UNAUTHORIZED' ||
+      error.message === 'ACCOUNT_DEACTIVATED' ||
+      error.message?.includes('Unauthorized')
+    ) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    if (error.message?.includes('Forbidden')) {
-      return NextResponse.json({ message: error.message }, { status: 403 });
+    if (error.message === 'FORBIDDEN' || error.message?.includes('Forbidden')) {
+      return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
     }
     return NextResponse.json(
       { message: error.message || 'Failed to retrieve inventory report' },
