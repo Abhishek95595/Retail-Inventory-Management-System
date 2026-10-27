@@ -1,8 +1,8 @@
 import React from 'react';
 import { redirect, notFound } from 'next/navigation';
-import { requirePermission } from '@/server/auth';
-import { getCategories, getCategoryById } from '@/server/categories';
-import { PERMISSIONS } from '@/lib/permissions';
+import { requirePermission } from '@/backend/server/auth';
+import { getCategories, getCategoryById } from '@/backend/server/categories';
+import { PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { CategoryForm } from '@/frontend/components/CategoryForm';
 

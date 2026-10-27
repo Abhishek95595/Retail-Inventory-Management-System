@@ -23,7 +23,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
-import { hasPermission, PERMISSIONS, UserRole } from '@/lib/permissions';
+import { hasPermission, PERMISSIONS, UserRole } from '@/shared/permissions';
 
 interface AppHeaderProps {
   user: {

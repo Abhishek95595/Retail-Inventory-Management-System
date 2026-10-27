@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDashboardMetrics } from '@/server/reporting';
+import { getDashboardMetrics } from '@/backend/server/reporting';
 
 export async function GET(_req: NextRequest) {
   try {

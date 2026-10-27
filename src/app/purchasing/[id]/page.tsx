@@ -2,7 +2,7 @@ import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
-import { getPurchaseOrderById } from '@/server/purchasing';
+import { getPurchaseOrderById } from '@/backend/server/purchasing';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { PurchaseOrderActions } from '@/frontend/components/PurchaseOrderActions';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ import {
   Truck,
   XCircle,
 } from 'lucide-react';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 interface PurchaseOrderDetailPageProps {
   params: { id: string };

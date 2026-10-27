@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { recordStockReceipt } from '@/server/movements';
-import { stockReceiptSchema } from '@/lib/validations/movement';
+import { recordStockReceipt } from '@/backend/server/movements';
+import { stockReceiptSchema } from '@/shared/validations/movement';
 
 export async function POST(req: NextRequest) {
   try {

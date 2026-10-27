@@ -1,10 +1,10 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getSalesOrders } from '@/server/orders';
-import { getWarehouses } from '@/server/warehouses';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getSalesOrders } from '@/backend/server/orders';
+import { getWarehouses } from '@/backend/server/warehouses';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import {
   ShoppingCart,
@@ -20,7 +20,7 @@ import {
   PackageCheck,
   Boxes,
 } from 'lucide-react';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 interface OrdersPageProps {
   searchParams: {

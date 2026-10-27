@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPurchaseOrders, createPurchaseOrder } from '@/server/purchasing';
-import { createPurchaseOrderSchema, queryPurchaseOrdersSchema } from '@/lib/validations/purchasing';
+import { getPurchaseOrders, createPurchaseOrder } from '@/backend/server/purchasing';
+import { createPurchaseOrderSchema, queryPurchaseOrdersSchema } from '@/shared/validations/purchasing';
 
 export async function GET(req: NextRequest) {
   try {

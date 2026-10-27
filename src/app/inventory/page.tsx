@@ -1,10 +1,10 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getInventoryBalances, InventoryBalanceFilters } from '@/server/inventory';
-import { getWarehouses } from '@/server/warehouses';
-import { getCategories } from '@/server/categories';
+import { requireAuth } from '@/backend/server/auth';
+import { getInventoryBalances, InventoryBalanceFilters } from '@/backend/server/inventory';
+import { getWarehouses } from '@/backend/server/warehouses';
+import { getCategories } from '@/backend/server/categories';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import {
   PackageSearch,

@@ -1,9 +1,9 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getWarehouses, WarehouseFilters } from '@/server/warehouses';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getWarehouses, WarehouseFilters } from '@/backend/server/warehouses';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import {
   Warehouse,

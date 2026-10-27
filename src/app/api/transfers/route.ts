@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTransfers, createTransfer } from '@/server/transfers';
-import { queryTransfersSchema, createTransferSchema } from '@/lib/validations/transfer';
+import { getTransfers, createTransfer } from '@/backend/server/transfers';
+import { queryTransfersSchema, createTransferSchema } from '@/shared/validations/transfer';
 
 export async function GET(req: NextRequest) {
   try {

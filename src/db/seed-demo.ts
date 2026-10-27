@@ -1,60 +1,20 @@
 import postgres from 'postgres';
 import * as dotenv from 'dotenv';
 import { hashPassword } from '../lib/password';
+import { validateSeedDatabaseTarget } from '@/backend/db/seed-target-validator';
 
 dotenv.config({ path: '.env.local' });
 dotenv.config();
 
-const connectionString =
-  process.env.DATABASE_URL || 'postgresql://postgres:postgres_dev_password@localhost:5432/rims_dev';
-
-/**
- * Validate that the target database is explicitly a development or demo database.
- * Refuses execution if running in production, if database URL points to a production host,
- * or if the database name is not an authorized development/demo DB.
- */
-function validateDatabaseTarget(urlStr: string) {
-  if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_PROD_SEED) {
-    throw new Error(
-      '⛔ FATAL: seed-demo cannot be executed in production environment without explicit ALLOW_PROD_SEED=true.'
-    );
-  }
-
-  // Parse target database name
-  try {
-    const parsed = new URL(urlStr);
-    const dbName = parsed.pathname.replace(/^\//, '');
-
-    const allowedDbNames = ['rims_dev', 'rims_demo', 'rims_staging', 'rims_test'];
-    const isLocalhost =
-      parsed.hostname === 'localhost' ||
-      parsed.hostname === '127.0.0.1' ||
-      parsed.hostname === '0.0.0.0';
-
-    if (!isLocalhost && !process.env.ALLOW_REMOTE_SEED) {
-      throw new Error(
-        `⛔ FATAL: Refusing to seed non-localhost database (${parsed.hostname}) without ALLOW_REMOTE_SEED=true.`
-      );
-    }
-
-    if (!allowedDbNames.includes(dbName) && !process.env.ALLOW_ANY_DB_NAME) {
-      throw new Error(
-        `⛔ FATAL: Target database "${dbName}" is not in the allowed list [${allowedDbNames.join(', ')}].`
-      );
-    }
-  } catch (err: any) {
-    if (err.message.startsWith('⛔ FATAL:')) throw err;
-    throw new Error(`Invalid DATABASE_URL configuration: ${err.message}`);
-  }
-}
+const connectionString = process.env.DATABASE_URL;
 
 export async function runDemoSeed(options: { cleanTestFixtures?: boolean } = {}) {
   const { cleanTestFixtures = true } = options;
 
-  validateDatabaseTarget(connectionString);
+  validateSeedDatabaseTarget(connectionString, { scriptName: 'seed-demo' });
 
   console.log('🌱 Connecting to database for demonstration catalog setup...');
-  const sql = postgres(connectionString, { max: 1 });
+  const sql = postgres(connectionString!, { max: 1 });
 
   try {
     await sql.begin(async (tx) => {

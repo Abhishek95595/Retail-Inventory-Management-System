@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserPlus, AlertCircle, CheckCircle, X, Shield, Edit2 } from 'lucide-react';
-import { UserRole } from '@/lib/permissions';
+import { UserRole } from '@/shared/permissions';
 
 export interface SafeUser {
   id: string;

@@ -1,10 +1,10 @@
 import React from 'react';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getWarehouseById } from '@/server/warehouses';
-import { getInventoryBalances } from '@/server/inventory';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getWarehouseById } from '@/backend/server/warehouses';
+import { getInventoryBalances } from '@/backend/server/inventory';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { WarehouseActions } from '@/frontend/components/WarehouseActions';
 import {

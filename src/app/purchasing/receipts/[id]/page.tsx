@@ -2,11 +2,11 @@ import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
-import { getGoodsReceiptById } from '@/server/purchasing';
+import { getGoodsReceiptById } from '@/backend/server/purchasing';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import Link from 'next/link';
 import { ArrowLeft, Truck } from 'lucide-react';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 interface ReceiptDetailPageProps {
   params: { id: string };

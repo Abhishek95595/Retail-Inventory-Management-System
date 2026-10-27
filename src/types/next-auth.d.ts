@@ -1,4 +1,4 @@
-import type { UserRole } from '@/lib/permissions';
+import type { UserRole } from '@/shared/permissions';
 
 declare module 'next-auth' {
   interface User {

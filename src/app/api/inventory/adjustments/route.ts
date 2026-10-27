@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { recordStockAdjustment } from '@/server/movements';
-import { stockAdjustmentSchema } from '@/lib/validations/movement';
+import { recordStockAdjustment } from '@/backend/server/movements';
+import { stockAdjustmentSchema } from '@/shared/validations/movement';
 
 export async function POST(req: NextRequest) {
   try {

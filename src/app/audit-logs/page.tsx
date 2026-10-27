@@ -1,9 +1,9 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { getAuditLogs } from '@/server/reporting';
+import { requireAuth } from '@/backend/server/auth';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
+import { getAuditLogs } from '@/backend/server/reporting';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import {
   ShieldAlert,

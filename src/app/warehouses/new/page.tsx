@@ -1,7 +1,7 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
-import { requireAuth } from '@/server/auth';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { WarehouseForm } from '@/frontend/components/WarehouseForm';
 

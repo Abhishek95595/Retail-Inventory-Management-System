@@ -1,9 +1,9 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
-import { requireAuth } from '@/server/auth';
-import { ROLE_PERMISSIONS, hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { ROLE_PERMISSIONS, hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
-import { getDashboardMetrics } from '@/server/reporting';
+import { getDashboardMetrics } from '@/backend/server/reporting';
 import Link from 'next/link';
 import {
   Boxes,
@@ -16,7 +16,7 @@ import {
   Shield,
   Key,
 } from 'lucide-react';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 export default async function AppDashboardPage() {
   let user;

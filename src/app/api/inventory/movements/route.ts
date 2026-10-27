@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMovementHistory } from '@/server/movements';
-import { queryMovementsSchema } from '@/lib/validations/movement';
+import { getMovementHistory } from '@/backend/server/movements';
+import { queryMovementsSchema } from '@/shared/validations/movement';
 
 export async function GET(req: NextRequest) {
   try {

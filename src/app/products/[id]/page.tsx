@@ -1,13 +1,13 @@
 import React from 'react';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getProductById } from '@/server/products';
-import { getProductInventoryBalances } from '@/server/inventory';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getProductById } from '@/backend/server/products';
+import { getProductInventoryBalances } from '@/backend/server/inventory';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { Boxes, ArrowLeft, Edit, Tag, Truck, RotateCcw } from 'lucide-react';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
   let user;

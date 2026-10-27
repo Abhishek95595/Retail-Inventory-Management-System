@@ -43,5 +43,7 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
 *.tsbuildinfo
+
+# Phase backup directories
+/rims-phase*-backup-*/

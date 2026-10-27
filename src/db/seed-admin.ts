@@ -1,24 +1,19 @@
 import postgres from 'postgres';
 import * as dotenv from 'dotenv';
 import { hashPassword } from '../lib/password';
+import { validateSeedDatabaseTarget } from '@/backend/db/seed-target-validator';
 
 dotenv.config({ path: '.env.local' });
 dotenv.config();
 
-const connectionString =
-  process.env.DATABASE_URL || 'postgresql://postgres:postgres_dev_password@localhost:5432/rims_dev';
+const connectionString = process.env.DATABASE_URL;
 
 async function seedAdmin() {
-  if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_PROD_SEED) {
-    console.error(
-      '⛔ FATAL: seed-admin cannot be executed in production without explicit ALLOW_PROD_SEED=true.'
-    );
-    process.exit(1);
-  }
+  validateSeedDatabaseTarget(connectionString, { scriptName: 'seed-admin' });
 
   console.log('🌱 Starting safe development administrator seed...');
 
-  const sql = postgres(connectionString, { max: 1 });
+  const sql = postgres(connectionString!, { max: 1 });
 
   const adminEmail = process.env.DEV_ADMIN_EMAIL || 'admin@rims.local';
   const adminPassword = process.env.DEV_ADMIN_PASSWORD || 'AdminPassword123!';

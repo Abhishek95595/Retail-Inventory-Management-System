@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getInventoryBalances, InventoryBalanceFilters } from '@/server/inventory';
-import { queryInventoryBalanceSchema } from '@/lib/validations/warehouse';
+import { getInventoryBalances, InventoryBalanceFilters } from '@/backend/server/inventory';
+import { queryInventoryBalanceSchema } from '@/shared/validations/warehouse';
 
 export async function GET(req: NextRequest) {
   try {

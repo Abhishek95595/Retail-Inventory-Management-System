@@ -1,1 +1,1 @@
-export type { Permission, UserRole } from '@/lib/permissions';
+export type { Permission, UserRole } from '../permissions';

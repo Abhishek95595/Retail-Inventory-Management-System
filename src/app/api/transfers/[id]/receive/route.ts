@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { receiveTransfer } from '@/server/transfers';
-import { receiveTransferSchema } from '@/lib/validations/transfer';
+import { receiveTransfer } from '@/backend/server/transfers';
+import { receiveTransferSchema } from '@/shared/validations/transfer';
 
 interface RouteContext {
   params: { id: string };

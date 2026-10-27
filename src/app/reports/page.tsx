@@ -1,11 +1,11 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { getInventoryReport } from '@/server/reporting';
-import { getWarehouses } from '@/server/warehouses';
-import { getCategories } from '@/server/categories';
+import { requireAuth } from '@/backend/server/auth';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
+import { getInventoryReport } from '@/backend/server/reporting';
+import { getWarehouses } from '@/backend/server/warehouses';
+import { getCategories } from '@/backend/server/categories';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import {
   FileSpreadsheet,
@@ -17,7 +17,7 @@ import {
   IndianRupee,
   RotateCcw,
 } from 'lucide-react';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 interface ReportsPageProps {
   searchParams: {

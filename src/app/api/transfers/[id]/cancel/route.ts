@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cancelTransfer } from '@/server/transfers';
-import { cancelTransferSchema } from '@/lib/validations/transfer';
+import { cancelTransfer } from '@/backend/server/transfers';
+import { cancelTransferSchema } from '@/shared/validations/transfer';
 
 interface RouteContext {
   params: { id: string };

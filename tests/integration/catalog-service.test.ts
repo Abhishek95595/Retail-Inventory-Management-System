@@ -1,16 +1,14 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import * as schema from '@/db/schema';
+import * as schema from '@/backend/db/schema';
 import { eq } from 'drizzle-orm';
-import { createCategory, updateCategory } from '@/server/categories';
-import { createProduct, archiveProduct, getProducts } from '@/server/products';
-
-const connectionString =
-  process.env.DATABASE_URL || 'postgresql://abhishekverma:@localhost:5432/rims_dev';
+import { createCategory, updateCategory } from '@/backend/server/categories';
+import { createProduct, archiveProduct, getProducts } from '@/backend/server/products';
+import { getVerifiedTestDb, ensureTestAdminUser, cleanupTestAdminUser } from './setup-test-db';
 
 // Mock server auth for integration tests using the existing seeded admin user
-vi.mock('@/server/auth', () => ({
+vi.mock('@/backend/server/auth', () => ({
   requirePermission: vi.fn().mockResolvedValue({
     id: '7b7d58da-d45a-411d-bd0e-c42f65521482',
     email: 'admin@rims.local',
@@ -29,14 +27,17 @@ vi.mock('@/server/auth', () => ({
 
 describe('RIMS Category & Product Catalog Server Operations Integration Tests', () => {
   let sql: postgres.Sql;
-  let dbClient: ReturnType<typeof drizzle>;
+  let dbClient: ReturnType<typeof drizzle<typeof schema>>;
+  let createdAdminUser = false;
 
   const createdCategoryIds: string[] = [];
   const createdProductIds: string[] = [];
 
   beforeAll(async () => {
-    sql = postgres(connectionString, { max: 1 });
-    dbClient = drizzle(sql, { schema });
+    const verified = await getVerifiedTestDb();
+    sql = verified.sql;
+    dbClient = verified.db;
+    createdAdminUser = await ensureTestAdminUser(dbClient);
   });
 
   afterAll(async () => {
@@ -55,6 +56,7 @@ describe('RIMS Category & Product Catalog Server Operations Integration Tests', 
     for (const catId of createdCategoryIds.reverse()) {
       await dbClient.delete(schema.categories).where(eq(schema.categories.id, catId));
     }
+    await cleanupTestAdminUser(dbClient, createdAdminUser);
     await sql.end();
   });
 

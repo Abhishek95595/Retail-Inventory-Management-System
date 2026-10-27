@@ -1,9 +1,9 @@
 import React from 'react';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getSalesOrderById } from '@/server/orders';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getSalesOrderById } from '@/backend/server/orders';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { OrderActions } from '@/frontend/components/OrderActions';
 import {
@@ -19,7 +19,7 @@ import {
   XCircle,
   ShieldCheck,
 } from 'lucide-react';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 interface OrderDetailPageProps {
   params: {

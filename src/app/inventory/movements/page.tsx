@@ -1,14 +1,14 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getMovementHistory } from '@/server/movements';
-import { getWarehouses } from '@/server/warehouses';
-import { getProducts } from '@/server/products';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getMovementHistory } from '@/backend/server/movements';
+import { getWarehouses } from '@/backend/server/warehouses';
+import { getProducts } from '@/backend/server/products';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { MovementActionToolbar } from '@/frontend/components/MovementActionToolbar';
-import { MovementHistoryFilters } from '@/server/movements';
+import { MovementHistoryFilters } from '@/backend/server/movements';
 import {
   History,
   Search,

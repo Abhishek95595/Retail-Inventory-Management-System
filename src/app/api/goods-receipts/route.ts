@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getGoodsReceipts, receiveGoods } from '@/server/purchasing';
-import { createGoodsReceiptSchema, queryGoodsReceiptsSchema } from '@/lib/validations/purchasing';
+import { getGoodsReceipts, receiveGoods } from '@/backend/server/purchasing';
+import { createGoodsReceiptSchema, queryGoodsReceiptsSchema } from '@/shared/validations/purchasing';
 
 export async function GET(req: NextRequest) {
   try {

@@ -1,20 +1,18 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import * as schema from '@/db/schema';
+import * as schema from '@/backend/db/schema';
 import { eq } from 'drizzle-orm';
 import {
   recordStockReceipt,
   recordStockIssue,
   recordStockAdjustment,
   getMovementHistory,
-} from '@/server/movements';
-
-const connectionString =
-  process.env.DATABASE_URL || 'postgresql://abhishekverma:@localhost:5432/rims_dev';
+} from '@/backend/server/movements';
+import { getVerifiedTestDb, ensureTestAdminUser, cleanupTestAdminUser } from './setup-test-db';
 
 // Mock server auth using the seeded administrator account
-vi.mock('@/server/auth', () => ({
+vi.mock('@/backend/server/auth', () => ({
   requirePermission: vi.fn().mockResolvedValue({
     id: '7b7d58da-d45a-411d-bd0e-c42f65521482',
     email: 'admin@rims.local',
@@ -33,19 +31,22 @@ vi.mock('@/server/auth', () => ({
 
 describe('RIMS Stock Movement Ledger & Invariant Integration Tests', () => {
   let sql: postgres.Sql;
-  let dbClient: ReturnType<typeof drizzle>;
+  let dbClient: ReturnType<typeof drizzle<typeof schema>>;
 
   let testWarehouseId: string;
   let testInactiveWarehouseId: string;
   let testCategoryId: string;
   let testProductId: string;
   let testArchivedProductId: string;
+  let createdAdminUser = false;
 
   const createdMovementIds: string[] = [];
 
   beforeAll(async () => {
-    sql = postgres(connectionString, { max: 1 });
-    dbClient = drizzle(sql, { schema });
+    const verified = await getVerifiedTestDb();
+    sql = verified.sql;
+    dbClient = verified.db;
+    createdAdminUser = await ensureTestAdminUser(dbClient);
 
     // 1. Create active warehouse
     const [wh] = await dbClient
@@ -132,6 +133,9 @@ describe('RIMS Stock Movement Ledger & Invariant Integration Tests', () => {
     await dbClient
       .delete(schema.warehouses)
       .where(eq(schema.warehouses.id, testInactiveWarehouseId));
+
+    // 6. Clean up test admin user if created by this suite
+    await cleanupTestAdminUser(dbClient, createdAdminUser);
 
     await sql.end();
   });

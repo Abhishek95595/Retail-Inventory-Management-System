@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cancelPurchaseOrder } from '@/server/purchasing';
-import { cancelPurchaseOrderSchema } from '@/lib/validations/purchasing';
+import { cancelPurchaseOrder } from '@/backend/server/purchasing';
+import { cancelPurchaseOrderSchema } from '@/shared/validations/purchasing';
 
 interface RouteContext {
   params: { id: string };

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash2, ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 interface SupplierOption {
   id: string;

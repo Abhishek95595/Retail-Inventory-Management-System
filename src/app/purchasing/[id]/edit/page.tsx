@@ -2,12 +2,12 @@ import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
-import { db } from '@/db';
-import { warehouses, products, suppliers } from '@/db/schema';
+import { db } from '@/backend/db';
+import { warehouses, products, suppliers } from '@/backend/db/schema';
 import { eq } from 'drizzle-orm';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { PurchaseOrderForm } from '@/frontend/components/PurchaseOrderForm';
-import { getPurchaseOrderById } from '@/server/purchasing';
+import { getPurchaseOrderById } from '@/backend/server/purchasing';
 
 interface EditPOPageProps {
   params: { id: string };

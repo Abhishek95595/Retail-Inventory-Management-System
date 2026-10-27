@@ -1,8 +1,8 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
-import { requireAuth } from '@/server/auth';
-import { getUsers } from '@/server/users';
-import { hasPermission, PERMISSIONS, UserRole } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getUsers } from '@/backend/server/users';
+import { hasPermission, PERMISSIONS, UserRole } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { UserManagementActions, UserRoleStatusRowButton } from '@/frontend/components/UserManagementActions';
 import { Shield, Search, CheckCircle2, XCircle } from 'lucide-react';

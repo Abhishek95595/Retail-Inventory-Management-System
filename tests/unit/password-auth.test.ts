@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { hashPassword, verifyPassword } from '@/lib/password';
-import { loginSchema } from '@/lib/validations/auth';
+import { loginSchema } from '@/shared/validations/auth';
 
 describe('RIMS Password Security & Auth Validation Unit Tests', () => {
   it('hashes passwords using Argon2id format with salt and OWASP parameters', async () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatINR, formatINRAmount } from '@/lib/currency';
+import { formatINR, formatINRAmount } from '@/shared/currency';
 
 describe('formatINR utility', () => {
   it('formats zero correctly', () => {

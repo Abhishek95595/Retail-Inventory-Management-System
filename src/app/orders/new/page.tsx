@@ -1,11 +1,11 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getWarehouses } from '@/server/warehouses';
-import { getProducts } from '@/server/products';
-import { requirePermission } from '@/server/auth';
-import { PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getWarehouses } from '@/backend/server/warehouses';
+import { getProducts } from '@/backend/server/products';
+import { requirePermission } from '@/backend/server/auth';
+import { PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { OrderForm } from '@/frontend/components/OrderForm';
 import { ShoppingCart, ChevronRight } from 'lucide-react';

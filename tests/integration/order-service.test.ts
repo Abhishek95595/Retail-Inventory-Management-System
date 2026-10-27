@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import { db } from '@/db';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import * as schema from '@/backend/db/schema';
 import {
   warehouses,
   categories,
@@ -9,7 +11,7 @@ import {
   salesOrders,
   salesOrderItems,
   stockReservations,
-} from '@/db/schema';
+} from '@/backend/db/schema';
 import {
   createSalesOrder,
   confirmSalesOrder,
@@ -19,11 +21,12 @@ import {
   deliverSalesOrder,
   cancelSalesOrder,
   getSalesOrderById,
-} from '@/server/orders';
-import { eq, and } from 'drizzle-orm';
+} from '@/backend/server/orders';
+import { eq, and, inArray } from 'drizzle-orm';
+import { getVerifiedTestDb, ensureTestAdminUser, cleanupTestAdminUser } from './setup-test-db';
 
 // Mock server auth using the administrator account for integration tests
-vi.mock('@/server/auth', () => ({
+vi.mock('@/backend/server/auth', () => ({
   requirePermission: vi.fn().mockResolvedValue({
     id: '7b7d58da-d45a-411d-bd0e-c42f65521482',
     email: 'admin@rims.local',
@@ -41,13 +44,24 @@ vi.mock('@/server/auth', () => ({
 }));
 
 describe('RIMS Sales Order Management & Stock Reservations Integration Tests', () => {
+  let sql: postgres.Sql;
+  let db: ReturnType<typeof drizzle<typeof schema>>;
+
   let warehouseId: string;
   let categoryId: string;
   let productAId: string;
   let productBId: string;
   let archivedProductId: string;
+  let createdAdminUser = false;
+
+  const createdSalesOrderIds: string[] = [];
 
   beforeAll(async () => {
+    const verified = await getVerifiedTestDb();
+    sql = verified.sql;
+    db = verified.db;
+    createdAdminUser = await ensureTestAdminUser(db);
+
     const ts = Date.now();
 
     // 1. Create fulfillment warehouse
@@ -132,16 +146,34 @@ describe('RIMS Sales Order Management & Stock Reservations Integration Tests', (
 
   afterAll(async () => {
     try {
-      await db.delete(stockReservations);
-      await db.delete(salesOrderItems);
-      await db.delete(salesOrders);
-      await db
-        .delete(inventoryMovements)
-        .where(eq(inventoryMovements.referenceType, 'SALES_ORDER'));
-      await db.delete(inventoryBalances).where(eq(inventoryBalances.warehouseId, warehouseId));
-      await db.delete(products).where(eq(products.categoryId, categoryId));
-      await db.delete(categories).where(eq(categories.id, categoryId));
-      await db.delete(warehouses).where(eq(warehouses.id, warehouseId));
+      if (createdSalesOrderIds.length > 0) {
+        await db
+          .delete(stockReservations)
+          .where(inArray(stockReservations.salesOrderId, createdSalesOrderIds));
+        await db
+          .delete(salesOrderItems)
+          .where(inArray(salesOrderItems.salesOrderId, createdSalesOrderIds));
+        await db
+          .delete(salesOrders)
+          .where(inArray(salesOrders.id, createdSalesOrderIds));
+      }
+      if (warehouseId) {
+        await db
+          .delete(inventoryMovements)
+          .where(eq(inventoryMovements.warehouseId, warehouseId));
+        await db.delete(inventoryBalances).where(eq(inventoryBalances.warehouseId, warehouseId));
+      }
+      if (categoryId) {
+        await db.delete(products).where(eq(products.categoryId, categoryId));
+        await db.delete(categories).where(eq(categories.id, categoryId));
+      }
+      if (warehouseId) {
+        await db.delete(warehouses).where(eq(warehouses.id, warehouseId));
+      }
+      await cleanupTestAdminUser(db, createdAdminUser);
+      if (sql) {
+        await sql.end({ timeout: 2 });
+      }
     } catch {
       // Ignore cleanup errors
     }
@@ -167,6 +199,7 @@ describe('RIMS Sales Order Management & Stock Reservations Integration Tests', (
         { productId: productBId, quantity: 2, unitPrice: 100.0 }, // 2 * 100 = 200
       ],
     });
+    createdSalesOrderIds.push(order.id);
 
     expect(order).toBeDefined();
     expect(order.orderNumber).toMatch(/^SO-\d{8}-\d{4}$/);
@@ -190,6 +223,7 @@ describe('RIMS Sales Order Management & Stock Reservations Integration Tests', (
         { productId: productBId, quantity: 5 },
       ],
     });
+    createdSalesOrderIds.push(order.id);
 
     const confirmResult = await confirmSalesOrder(order.id);
     expect(confirmResult.status).toBe('CONFIRMED');
@@ -243,6 +277,7 @@ describe('RIMS Sales Order Management & Stock Reservations Integration Tests', (
       customerName: 'Excessive Buyer',
       items: [{ productId: productAId, quantity: 40 }],
     });
+    createdSalesOrderIds.push(excessiveOrder.id);
 
     await expect(confirmSalesOrder(excessiveOrder.id)).rejects.toThrow(
       /Insufficient available stock/i
@@ -273,6 +308,7 @@ describe('RIMS Sales Order Management & Stock Reservations Integration Tests', (
       customerName: 'Cancel Me',
       items: [{ productId: productAId, quantity: 10 }],
     });
+    createdSalesOrderIds.push(order.id);
 
     await confirmSalesOrder(order.id);
 
@@ -321,6 +357,7 @@ describe('RIMS Sales Order Management & Stock Reservations Integration Tests', (
       customerName: 'Full Flow Customer',
       items: [{ productId: productAId, quantity: 10 }],
     });
+    createdSalesOrderIds.push(order.id);
 
     await confirmSalesOrder(order.id);
     // reserved becomes 25, available becomes 25
@@ -399,12 +436,14 @@ describe('RIMS Sales Order Management & Stock Reservations Integration Tests', (
       customerName: 'Concurrent Buyer 1',
       items: [{ productId: productBId, quantity: 10 }],
     });
+    createdSalesOrderIds.push(o1.id);
 
     const o2 = await createSalesOrder({
       warehouseId,
       customerName: 'Concurrent Buyer 2',
       items: [{ productId: productBId, quantity: 10 }],
     });
+    createdSalesOrderIds.push(o2.id);
 
     const results = await Promise.allSettled([confirmSalesOrder(o1.id), confirmSalesOrder(o2.id)]);
 

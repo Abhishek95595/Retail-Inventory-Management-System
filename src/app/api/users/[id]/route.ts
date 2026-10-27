@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserById, updateUser } from '@/server/users';
-import { updateUserSchema } from '@/lib/validations/users';
+import { getUserById, updateUser } from '@/backend/server/users';
+import { updateUserSchema } from '@/shared/validations/users';
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {

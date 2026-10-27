@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWarehouses, createWarehouse, WarehouseFilters } from '@/server/warehouses';
-import { createWarehouseSchema } from '@/lib/validations/warehouse';
+import { getWarehouses, createWarehouse, WarehouseFilters } from '@/backend/server/warehouses';
+import { createWarehouseSchema } from '@/shared/validations/warehouse';
 
 export async function GET(req: NextRequest) {
   try {

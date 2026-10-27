@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dispatchSalesOrder } from '@/server/orders';
-import { dispatchOrderSchema } from '@/lib/validations/order';
+import { dispatchSalesOrder } from '@/backend/server/orders';
+import { dispatchOrderSchema } from '@/shared/validations/order';
 
 interface RouteContext {
   params: { id: string };

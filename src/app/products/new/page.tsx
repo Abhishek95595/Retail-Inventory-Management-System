@@ -1,10 +1,10 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
-import { requirePermission } from '@/server/auth';
-import { getCategories } from '@/server/categories';
-import { db } from '@/db';
-import { suppliers } from '@/db/schema';
-import { PERMISSIONS } from '@/lib/permissions';
+import { requirePermission } from '@/backend/server/auth';
+import { getCategories } from '@/backend/server/categories';
+import { db } from '@/backend/db';
+import { suppliers } from '@/backend/db/schema';
+import { PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { ProductForm } from '@/frontend/components/ProductForm';
 

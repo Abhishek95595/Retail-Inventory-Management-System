@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCategories, createCategory } from '@/server/categories';
-import { createCategorySchema } from '@/lib/validations/catalog';
+import { getCategories, createCategory } from '@/backend/server/categories';
+import { createCategorySchema } from '@/shared/validations/catalog';
 
 export async function GET() {
   try {

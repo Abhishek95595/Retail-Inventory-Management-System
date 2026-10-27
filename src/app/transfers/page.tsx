@@ -1,10 +1,10 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getTransfers } from '@/server/transfers';
-import { getWarehouses } from '@/server/warehouses';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getTransfers } from '@/backend/server/transfers';
+import { getWarehouses } from '@/backend/server/warehouses';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import {
   ArrowLeftRight,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsers, createUser } from '@/server/users';
-import { createUserSchema } from '@/lib/validations/users';
-import type { UserRole } from '@/lib/permissions';
+import { getUsers, createUser } from '@/backend/server/users';
+import { createUserSchema } from '@/shared/validations/users';
+import type { UserRole } from '@/shared/permissions';
 
 export async function GET(req: NextRequest) {
   try {

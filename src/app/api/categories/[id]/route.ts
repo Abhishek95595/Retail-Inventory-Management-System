@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCategoryById, updateCategory, deleteCategory } from '@/server/categories';
-import { updateCategorySchema } from '@/lib/validations/catalog';
+import { getCategoryById, updateCategory, deleteCategory } from '@/backend/server/categories';
+import { updateCategorySchema } from '@/shared/validations/catalog';
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getInventoryReport, exportInventoryReportCsv } from '@/server/reporting';
-import { queryInventoryReportSchema } from '@/lib/validations/reporting';
+import { getInventoryReport, exportInventoryReportCsv } from '@/backend/server/reporting';
+import { queryInventoryReportSchema } from '@/shared/validations/reporting';
 
 export async function GET(req: NextRequest) {
   try {

@@ -1,13 +1,16 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import { db } from '@/db';
-import { warehouses, categories, products, inventoryBalances, auditLogs } from '@/db/schema';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import * as schema from '@/backend/db/schema';
+import { warehouses, categories, products, inventoryBalances, auditLogs } from '@/backend/db/schema';
 import {
   getDashboardMetrics,
   getInventoryReport,
   exportInventoryReportCsv,
   getAuditLogs,
-} from '@/server/reporting';
+} from '@/backend/server/reporting';
 import { eq, inArray } from 'drizzle-orm';
+import { getVerifiedTestDb, ensureTestAdminUser, cleanupTestAdminUser } from './setup-test-db';
 
 const mockCurrentUser = {
   id: '7b7d58da-d45a-411d-bd0e-c42f65521482',
@@ -17,7 +20,7 @@ const mockCurrentUser = {
   isActive: true,
 };
 
-vi.mock('@/server/auth', () => ({
+vi.mock('@/backend/server/auth', () => ({
   requirePermission: vi.fn(async (perm: string) => {
     // If testing permission denial, check role
     if (mockCurrentUser.role === 'WAREHOUSE_STAFF') {
@@ -29,6 +32,10 @@ vi.mock('@/server/auth', () => ({
 }));
 
 describe('RIMS Phase 10: Operational Dashboards, Reporting & Audit Review', () => {
+  let sql: postgres.Sql;
+  let db: ReturnType<typeof drizzle<typeof schema>>;
+  let createdAdminUser = false;
+
   let warehouseId: string;
   let categoryId: string;
   let normalProductId: string;
@@ -37,6 +44,11 @@ describe('RIMS Phase 10: Operational Dashboards, Reporting & Audit Review', () =
   const ts = Date.now();
 
   beforeAll(async () => {
+    const verified = await getVerifiedTestDb();
+    sql = verified.sql;
+    db = verified.db;
+    createdAdminUser = await ensureTestAdminUser(db);
+
     // 1. Create a dedicated test warehouse
     const [wh] = await db
       .insert(warehouses)
@@ -165,6 +177,10 @@ describe('RIMS Phase 10: Operational Dashboards, Reporting & Audit Review', () =
     }
     if (warehouseId) {
       await db.delete(warehouses).where(eq(warehouses.id, warehouseId));
+    }
+    await cleanupTestAdminUser(db, createdAdminUser);
+    if (sql) {
+      await sql.end({ timeout: 2 });
     }
   });
 

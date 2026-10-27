@@ -4,8 +4,8 @@ import {
   updateWarehouse,
   toggleWarehouseStatus,
   deleteWarehouse,
-} from '@/server/warehouses';
-import { updateWarehouseSchema } from '@/lib/validations/warehouse';
+} from '@/backend/server/warehouses';
+import { updateWarehouseSchema } from '@/shared/validations/warehouse';
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {

@@ -2,9 +2,9 @@ import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { getPurchaseOrders } from '@/server/purchasing';
-import { db } from '@/db';
-import { warehouses, suppliers } from '@/db/schema';
+import { getPurchaseOrders } from '@/backend/server/purchasing';
+import { db } from '@/backend/db';
+import { warehouses, suppliers } from '@/backend/db/schema';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import Link from 'next/link';
 import {
@@ -18,7 +18,7 @@ import {
   AlertTriangle,
   XCircle,
 } from 'lucide-react';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 interface PurchasingPageProps {
   searchParams: {

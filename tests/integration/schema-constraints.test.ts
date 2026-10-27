@@ -1,23 +1,24 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import * as schema from '@/db/schema';
+import * as schema from '@/backend/db/schema';
 import { eq } from 'drizzle-orm';
-
-const connectionString =
-  process.env.DATABASE_URL || 'postgresql://abhishekverma:@localhost:5432/rims_dev';
+import { getVerifiedTestDb } from './setup-test-db';
 
 describe('RIMS Database Schema & Relational Integrity Tests', () => {
   let sql: postgres.Sql;
-  let db: ReturnType<typeof drizzle>;
+  let db: ReturnType<typeof drizzle<typeof schema>>;
 
-  beforeAll(() => {
-    sql = postgres(connectionString, { max: 1 });
-    db = drizzle(sql, { schema });
+  beforeAll(async () => {
+    const verified = await getVerifiedTestDb();
+    sql = verified.sql;
+    db = verified.db;
   });
 
   afterAll(async () => {
-    await sql.end();
+    if (sql) {
+      await sql.end({ timeout: 2 });
+    }
   });
 
   it('enforces unique email constraint on users table', async () => {

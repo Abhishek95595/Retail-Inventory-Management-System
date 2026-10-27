@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSalesOrderById, updateDraftOrder } from '@/server/orders';
-import { updateDraftOrderSchema } from '@/lib/validations/order';
+import { getSalesOrderById, updateDraftOrder } from '@/backend/server/orders';
+import { updateDraftOrderSchema } from '@/shared/validations/order';
 
 interface RouteContext {
   params: { id: string };

@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import { db } from '@/db';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import * as schema from '@/backend/db/schema';
 import {
   warehouses,
   categories,
@@ -8,7 +10,7 @@ import {
   inventoryMovements,
   stockTransfers,
   stockTransferItems,
-} from '@/db/schema';
+} from '@/backend/db/schema';
 import {
   createTransfer,
   updateDraftTransfer,
@@ -16,11 +18,12 @@ import {
   receiveTransfer,
   cancelTransfer,
   getTransferById,
-} from '@/server/transfers';
-import { eq, and } from 'drizzle-orm';
+} from '@/backend/server/transfers';
+import { eq, and, inArray } from 'drizzle-orm';
+import { getVerifiedTestDb, ensureTestAdminUser, cleanupTestAdminUser } from './setup-test-db';
 
 // Mock server auth using the administrator account for integration tests
-vi.mock('@/server/auth', () => ({
+vi.mock('@/backend/server/auth', () => ({
   requirePermission: vi.fn().mockResolvedValue({
     id: '7b7d58da-d45a-411d-bd0e-c42f65521482',
     email: 'admin@rims.local',
@@ -38,6 +41,9 @@ vi.mock('@/server/auth', () => ({
 }));
 
 describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
+  let sql: postgres.Sql;
+  let db: ReturnType<typeof drizzle<typeof schema>>;
+
   let sourceWarehouseId: string;
   let destWarehouseId: string;
   let inactiveWarehouseId: string;
@@ -45,8 +51,16 @@ describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
   let productAId: string;
   let productBId: string;
   let archivedProductId: string;
+  let createdAdminUser = false;
+
+  const createdTransferIds: string[] = [];
 
   beforeAll(async () => {
+    const verified = await getVerifiedTestDb();
+    sql = verified.sql;
+    db = verified.db;
+    createdAdminUser = await ensureTestAdminUser(db);
+
     // 1. Create warehouses
     const ts = Date.now();
     const [wh1] = await db
@@ -148,18 +162,45 @@ describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
   afterAll(async () => {
     // Clean up created records
     try {
-      await db.delete(stockTransferItems);
-      await db.delete(stockTransfers);
-      await db.delete(inventoryMovements).where(eq(inventoryMovements.referenceType, 'TRANSFER'));
-      await db
-        .delete(inventoryBalances)
-        .where(eq(inventoryBalances.warehouseId, sourceWarehouseId));
-      await db.delete(inventoryBalances).where(eq(inventoryBalances.warehouseId, destWarehouseId));
-      await db.delete(products).where(eq(products.categoryId, categoryId));
-      await db.delete(categories).where(eq(categories.id, categoryId));
-      await db.delete(warehouses).where(eq(warehouses.id, sourceWarehouseId));
-      await db.delete(warehouses).where(eq(warehouses.id, destWarehouseId));
-      await db.delete(warehouses).where(eq(warehouses.id, inactiveWarehouseId));
+      if (createdTransferIds.length > 0) {
+        await db
+          .delete(stockTransferItems)
+          .where(inArray(stockTransferItems.stockTransferId, createdTransferIds));
+        await db
+          .delete(stockTransfers)
+          .where(inArray(stockTransfers.id, createdTransferIds));
+      }
+      if (sourceWarehouseId) {
+        await db
+          .delete(inventoryMovements)
+          .where(eq(inventoryMovements.warehouseId, sourceWarehouseId));
+        await db
+          .delete(inventoryBalances)
+          .where(eq(inventoryBalances.warehouseId, sourceWarehouseId));
+      }
+      if (destWarehouseId) {
+        await db
+          .delete(inventoryMovements)
+          .where(eq(inventoryMovements.warehouseId, destWarehouseId));
+        await db.delete(inventoryBalances).where(eq(inventoryBalances.warehouseId, destWarehouseId));
+      }
+      if (categoryId) {
+        await db.delete(products).where(eq(products.categoryId, categoryId));
+        await db.delete(categories).where(eq(categories.id, categoryId));
+      }
+      if (sourceWarehouseId) {
+        await db.delete(warehouses).where(eq(warehouses.id, sourceWarehouseId));
+      }
+      if (destWarehouseId) {
+        await db.delete(warehouses).where(eq(warehouses.id, destWarehouseId));
+      }
+      if (inactiveWarehouseId) {
+        await db.delete(warehouses).where(eq(warehouses.id, inactiveWarehouseId));
+      }
+      await cleanupTestAdminUser(db, createdAdminUser);
+      if (sql) {
+        await sql.end({ timeout: 2 });
+      }
     } catch {
       // Ignore cleanup errors
     }
@@ -203,6 +244,7 @@ describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
         { productId: productBId, quantity: 15 },
       ],
     });
+    createdTransferIds.push(transfer.id);
 
     expect(transfer).toBeDefined();
     expect(transfer.transferNumber).toMatch(/^TRF-\d{8}-\d{4}$/);
@@ -222,6 +264,7 @@ describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
       notes: 'Pre-edit notes',
       items: [{ productId: productAId, quantity: 10 }],
     });
+    createdTransferIds.push(draft.id);
 
     // Update draft destination and notes
     const updated = await updateDraftTransfer(draft.id, {
@@ -242,6 +285,7 @@ describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
       destinationWarehouseId: destWarehouseId,
       items: [{ productId: productAId, quantity: 5 }],
     });
+    createdTransferIds.push(draft.id);
 
     const cancelled = await cancelTransfer(draft.id, { reason: 'Cancelled by customer' });
     expect(cancelled.status).toBe('CANCELLED');
@@ -260,6 +304,7 @@ describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
         { productId: productBId, quantity: 10 }, // valid: 10 <= 50
       ],
     });
+    createdTransferIds.push(transfer.id);
 
     const dispatchResult = await dispatchTransfer(transfer.id);
     expect(dispatchResult.status).toBe('DISPATCHED');
@@ -321,6 +366,7 @@ describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
       destinationWarehouseId: destWarehouseId,
       items: [{ productId: productAId, quantity: 70 }],
     });
+    createdTransferIds.push(excessiveTransfer.id);
 
     await expect(dispatchTransfer(excessiveTransfer.id)).rejects.toThrow(
       /Insufficient available stock/i
@@ -349,6 +395,7 @@ describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
       destinationWarehouseId: destWarehouseId,
       items: [{ productId: productBId, quantity: 20 }],
     });
+    createdTransferIds.push(transfer.id);
 
     await dispatchTransfer(transfer.id);
 
@@ -428,12 +475,14 @@ describe('RIMS Inter-Warehouse Stock Transfer Integration Tests', () => {
       destinationWarehouseId: destWarehouseId,
       items: [{ productId: productBId, quantity: 15 }],
     });
+    createdTransferIds.push(t1.id);
 
     const t2 = await createTransfer({
       sourceWarehouseId,
       destinationWarehouseId: destWarehouseId,
       items: [{ productId: productBId, quantity: 15 }],
     });
+    createdTransferIds.push(t2.id);
 
     // Execute dispatches concurrently
     const results = await Promise.allSettled([dispatchTransfer(t1.id), dispatchTransfer(t2.id)]);

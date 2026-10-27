@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { submitPurchaseOrder } from '@/server/purchasing';
+import { submitPurchaseOrder } from '@/backend/server/purchasing';
 
 interface RouteContext {
   params: { id: string };

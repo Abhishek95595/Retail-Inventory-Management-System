@@ -1,9 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import { db } from '@/db';
-import { warehouses, categories, products, inventoryBalances, auditLogs } from '@/db/schema';
-import { getAuditLogs, exportInventoryReportCsv } from '@/server/reporting';
-import { UserRole, hasPermission } from '@/lib/permissions';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import * as schema from '@/backend/db/schema';
+import { warehouses, categories, products, inventoryBalances, auditLogs } from '@/backend/db/schema';
+import { getAuditLogs, exportInventoryReportCsv } from '@/backend/server/reporting';
+import { UserRole, hasPermission } from '@/shared/permissions';
 import { eq } from 'drizzle-orm';
+import { getVerifiedTestDb, ensureTestAdminUser, cleanupTestAdminUser } from './setup-test-db';
 
 const mockUser: {
   id: string;
@@ -19,7 +22,7 @@ const mockUser: {
   isActive: true,
 };
 
-vi.mock('@/server/auth', async () => {
+vi.mock('@/backend/server/auth', async () => {
   return {
     getCurrentUser: vi.fn(async () => (mockUser.isActive ? mockUser : null)),
     requireAuth: vi.fn(async () => {
@@ -41,12 +44,21 @@ vi.mock('@/server/auth', async () => {
 });
 
 describe('RIMS Phase 11: Security Audit & Hardening Regression Tests', () => {
+  let sql: postgres.Sql;
+  let db: ReturnType<typeof drizzle<typeof schema>>;
+  let createdAdminUser = false;
+
   let warehouseId: string;
   let categoryId: string;
   let productId: string;
   const ts = Date.now();
 
   beforeAll(async () => {
+    const verified = await getVerifiedTestDb();
+    sql = verified.sql;
+    db = verified.db;
+    createdAdminUser = await ensureTestAdminUser(db);
+
     // 1. Create a facility
     const [wh] = await db
       .insert(warehouses)
@@ -126,6 +138,10 @@ describe('RIMS Phase 11: Security Audit & Hardening Regression Tests', () => {
     }
     if (warehouseId) {
       await db.delete(warehouses).where(eq(warehouses.id, warehouseId));
+    }
+    await cleanupTestAdminUser(db, createdAdminUser);
+    if (sql) {
+      await sql.end({ timeout: 2 });
     }
   });
 

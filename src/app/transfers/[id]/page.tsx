@@ -1,9 +1,9 @@
 import React from 'react';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getTransferById } from '@/server/transfers';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getTransferById } from '@/backend/server/transfers';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import { TransferActions } from '@/frontend/components/TransferActions';
 import { ChevronRight, Building, Clock, History, Truck, CheckCircle2, XCircle } from 'lucide-react';

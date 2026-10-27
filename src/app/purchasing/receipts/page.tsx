@@ -2,7 +2,7 @@ import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { getGoodsReceipts } from '@/server/purchasing';
+import { getGoodsReceipts } from '@/backend/server/purchasing';
 import { AppHeader } from '@/frontend/components/AppHeader';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';

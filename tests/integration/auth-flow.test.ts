@@ -1,25 +1,24 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import * as schema from '@/db/schema';
+import * as schema from '@/backend/db/schema';
 import { eq } from 'drizzle-orm';
 import { hashPassword } from '@/lib/password';
 import { authOptions } from '@/lib/auth';
-
-const connectionString =
-  process.env.DATABASE_URL || 'postgresql://abhishekverma:@localhost:5432/rims_dev';
+import { getVerifiedTestDb } from './setup-test-db';
 
 describe('RIMS Authentication & Credentials Flow Integration Tests', () => {
   let sql: postgres.Sql;
-  let db: ReturnType<typeof drizzle>;
+  let db: ReturnType<typeof drizzle<typeof schema>>;
 
   const activeEmail = `active_user_${Date.now()}@rims.local`;
   const inactiveEmail = `inactive_user_${Date.now()}@rims.local`;
   const testPassword = 'ValidPassword123!';
 
   beforeAll(async () => {
-    sql = postgres(connectionString, { max: 1 });
-    db = drizzle(sql, { schema });
+    const verified = await getVerifiedTestDb();
+    sql = verified.sql;
+    db = verified.db;
 
     const passwordHash = await hashPassword(testPassword);
 

@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import { db } from '@/db';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import * as schema from '@/backend/db/schema';
 import {
   warehouses,
   categories,
@@ -11,7 +13,7 @@ import {
   purchaseOrderItems,
   goodsReceipts,
   goodsReceiptItems,
-} from '@/db/schema';
+} from '@/backend/db/schema';
 import {
   createPurchaseOrder,
   updateDraftPurchaseOrder,
@@ -20,11 +22,12 @@ import {
   cancelPurchaseOrder,
   receiveGoods,
   getPurchaseOrderById,
-} from '@/server/purchasing';
+} from '@/backend/server/purchasing';
 import { eq, and } from 'drizzle-orm';
+import { getVerifiedTestDb, ensureTestAdminUser, cleanupTestAdminUser } from './setup-test-db';
 
 // Mock server auth using administrator account for integration tests
-vi.mock('@/server/auth', () => ({
+vi.mock('@/backend/server/auth', () => ({
   requirePermission: vi.fn().mockResolvedValue({
     id: '7b7d58da-d45a-411d-bd0e-c42f65521482',
     email: 'admin@rims.local',
@@ -42,13 +45,22 @@ vi.mock('@/server/auth', () => ({
 }));
 
 describe('RIMS Purchase Order Management & Goods Receipts Integration Tests', () => {
+  let sql: postgres.Sql;
+  let db: ReturnType<typeof drizzle<typeof schema>>;
+
   let warehouseId: string;
   let supplierId: string;
   let categoryId: string;
   let productAId: string;
   let productBId: string;
+  let createdAdminUser = false;
 
   beforeAll(async () => {
+    const verified = await getVerifiedTestDb();
+    sql = verified.sql;
+    db = verified.db;
+    createdAdminUser = await ensureTestAdminUser(db);
+
     const ts = Date.now();
 
     // 1. Create receiving warehouse
@@ -127,6 +139,10 @@ describe('RIMS Purchase Order Management & Goods Receipts Integration Tests', ()
     await db.delete(categories).where(eq(categories.id, categoryId));
     await db.delete(suppliers).where(eq(suppliers.id, supplierId));
     await db.delete(warehouses).where(eq(warehouses.id, warehouseId));
+    await cleanupTestAdminUser(db, createdAdminUser);
+    if (sql) {
+      await sql.end({ timeout: 2 });
+    }
   });
 
   it('1. Creates draft purchase order with correct cost snapshots and calculates order total', async () => {

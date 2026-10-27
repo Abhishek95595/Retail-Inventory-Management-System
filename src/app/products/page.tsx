@@ -1,14 +1,14 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { requireAuth } from '@/server/auth';
-import { getProducts } from '@/server/products';
-import { getCategories } from '@/server/categories';
-import { hasPermission, PERMISSIONS } from '@/lib/permissions';
+import { requireAuth } from '@/backend/server/auth';
+import { getProducts } from '@/backend/server/products';
+import { getCategories } from '@/backend/server/categories';
+import { hasPermission, PERMISSIONS } from '@/shared/permissions';
 import { AppHeader } from '@/frontend/components/AppHeader';
-import { ProductFilters } from '@/server/products';
+import { ProductFilters } from '@/backend/server/products';
 import { Boxes, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
-import { formatINR } from '@/lib/currency';
+import { formatINR } from '@/shared/currency';
 
 interface ProductsPageProps {
   searchParams: {

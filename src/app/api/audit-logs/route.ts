@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuditLogs } from '@/server/reporting';
-import { queryAuditLogsSchema } from '@/lib/validations/reporting';
+import { getAuditLogs } from '@/backend/server/reporting';
+import { queryAuditLogsSchema } from '@/shared/validations/reporting';
 
 export async function GET(req: NextRequest) {
   try {

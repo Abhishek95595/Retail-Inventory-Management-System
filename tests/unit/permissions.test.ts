@@ -5,7 +5,7 @@ import {
   hasAnyPermission,
   PERMISSIONS,
   type UserRole,
-} from '@/lib/permissions';
+} from '@/shared/permissions';
 
 describe('RIMS RBAC Permissions Matrix Unit Tests', () => {
   it('grants full operational and administrative permissions to ADMIN role', () => {

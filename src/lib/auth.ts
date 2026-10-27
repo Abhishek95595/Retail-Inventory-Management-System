@@ -1,11 +1,11 @@
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { eq } from 'drizzle-orm';
-import { db } from '@/db';
-import { users } from '@/db/schema';
+import { db } from '@/backend/db';
+import { users } from '@/backend/db/schema';
 import { verifyPassword } from '@/lib/password';
-import { loginSchema } from '@/lib/validations/auth';
-import type { UserRole } from '@/lib/permissions';
+import { loginSchema } from '@/shared/validations/auth';
+import type { UserRole } from '@/shared/permissions';
 
 export const authOptions: NextAuthOptions = {
   session: {
