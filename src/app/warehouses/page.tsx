@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { requireAuth } from '@/server/auth';
 import { getWarehouses, WarehouseFilters } from '@/server/warehouses';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
+import { AppHeader } from '@/frontend/components/AppHeader';
 import {
   Warehouse,
   Plus,

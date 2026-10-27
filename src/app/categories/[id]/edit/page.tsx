@@ -3,8 +3,8 @@ import { redirect, notFound } from 'next/navigation';
 import { requirePermission } from '@/server/auth';
 import { getCategories, getCategoryById } from '@/server/categories';
 import { PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
-import { CategoryForm } from '@/components/CategoryForm';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { CategoryForm } from '@/frontend/components/CategoryForm';
 
 export default async function EditCategoryPage({ params }: { params: { id: string } }) {
   let user;

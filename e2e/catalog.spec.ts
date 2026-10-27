@@ -89,7 +89,7 @@ test.describe('RIMS Product Catalog & Category Management E2E Flows', () => {
 
     await expect(page.getByRole('heading', { name: testTitle })).toBeVisible();
     await expect(page.getByText(`SKU: ${testSku}`)).toBeVisible();
-    await expect(page.getByText('$89.99')).toBeVisible();
+    await expect(page.getByText('₹89.99')).toBeVisible();
   });
 
   test('displays validation error when attempting duplicate category code', async ({ page }) => {

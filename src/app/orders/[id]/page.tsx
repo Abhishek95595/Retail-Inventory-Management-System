@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { requireAuth } from '@/server/auth';
 import { getSalesOrderById } from '@/server/orders';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
-import { OrderActions } from '@/components/OrderActions';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { OrderActions } from '@/frontend/components/OrderActions';
 import {
   ChevronRight,
   Building,
@@ -19,6 +19,7 @@ import {
   XCircle,
   ShieldCheck,
 } from 'lucide-react';
+import { formatINR } from '@/lib/currency';
 
 interface OrderDetailPageProps {
   params: {
@@ -192,7 +193,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
             <div className="mt-1 flex items-center justify-between text-xs text-slate-600">
               <span>Order Subtotal:</span>
               <span className="font-mono font-bold text-slate-900">
-                ${Number(order.totalAmount).toFixed(2)}
+                {formatINR(order.totalAmount)}
               </span>
             </div>
           </div>
@@ -270,7 +271,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
             <div className="text-right">
               <span className="text-xs text-slate-500">Total Order Amount:</span>
               <p className="text-lg font-mono font-bold text-slate-900">
-                ${Number(order.totalAmount).toFixed(2)}
+                {formatINR(order.totalAmount)}
               </p>
             </div>
           </div>
@@ -297,10 +298,10 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                       {it.quantity}
                     </td>
                     <td className="py-3.5 px-4 text-right font-mono text-slate-700">
-                      ${Number(it.unitPrice).toFixed(2)}
+                      {formatINR(it.unitPrice)}
                     </td>
                     <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-900">
-                      ${Number(it.lineTotal).toFixed(2)}
+                      {formatINR(it.lineTotal)}
                     </td>
                   </tr>
                 ))}

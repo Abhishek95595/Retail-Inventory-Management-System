@@ -476,8 +476,8 @@ export async function exportInventoryReportCsv(
     'Reserved',
     'Quarantined',
     'Available',
-    'Unit Cost',
-    'Valuation ($)',
+    'Unit Cost (INR)',
+    'Valuation (INR)',
     'Low Stock Alert',
   ];
 

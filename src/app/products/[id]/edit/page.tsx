@@ -6,8 +6,8 @@ import { getCategories } from '@/server/categories';
 import { db } from '@/db';
 import { suppliers } from '@/db/schema';
 import { PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
-import { ProductForm } from '@/components/ProductForm';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { ProductForm } from '@/frontend/components/ProductForm';
 
 export default async function EditProductPage({ params }: { params: { id: string } }) {
   let user;

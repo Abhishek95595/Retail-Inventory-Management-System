@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { requireAuth } from '@/server/auth';
 import { getTransferById } from '@/server/transfers';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
-import { TransferActions } from '@/components/TransferActions';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { TransferActions } from '@/frontend/components/TransferActions';
 import { ChevronRight, Building, Clock, History, Truck, CheckCircle2, XCircle } from 'lucide-react';
 
 interface TransferDetailPageProps {

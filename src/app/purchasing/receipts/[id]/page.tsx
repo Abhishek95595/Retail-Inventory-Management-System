@@ -3,9 +3,10 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
 import { getGoodsReceiptById } from '@/server/purchasing';
-import { AppHeader } from '@/components/AppHeader';
+import { AppHeader } from '@/frontend/components/AppHeader';
 import Link from 'next/link';
 import { ArrowLeft, Truck } from 'lucide-react';
+import { formatINR } from '@/lib/currency';
 
 interface ReceiptDetailPageProps {
   params: { id: string };
@@ -136,7 +137,7 @@ export default async function GoodsReceiptDetailPage({ params }: ReceiptDetailPa
                       +{item.quantityReceived}
                     </td>
                     <td className="px-4 py-3 text-right font-mono text-slate-600">
-                      ${item.unitCost}
+                      {formatINR(item.unitCost)}
                     </td>
                   </tr>
                 ))}

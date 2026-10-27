@@ -5,8 +5,9 @@ import { requireAuth } from '@/server/auth';
 import { getProductById } from '@/server/products';
 import { getProductInventoryBalances } from '@/server/inventory';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
+import { AppHeader } from '@/frontend/components/AppHeader';
 import { Boxes, ArrowLeft, Edit, Tag, Truck, RotateCcw } from 'lucide-react';
+import { formatINR } from '@/lib/currency';
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
   let user;
@@ -98,10 +99,10 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
                   Selling Price
                 </p>
                 <p className="text-2xl font-extrabold text-slate-900 font-mono mt-0.5">
-                  ${parseFloat(product.sellingPrice).toFixed(2)}
+                  {formatINR(product.sellingPrice)}
                 </p>
                 <p className="text-xs text-slate-400 font-mono mt-0.5">
-                  Cost: ${parseFloat(product.costPrice).toFixed(2)}
+                  Cost: {formatINR(product.costPrice)}
                 </p>
               </div>
             </div>
@@ -138,7 +139,9 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
               <p className="text-sm font-semibold text-slate-900">
                 {product.supplierName || 'No Preferred Supplier'}
               </p>
-              <p className="text-xs text-slate-500 mt-1">Standard Cost: ${product.costPrice}</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Standard Cost: {formatINR(product.costPrice)}
+              </p>
             </div>
 
             <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">

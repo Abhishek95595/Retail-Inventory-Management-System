@@ -3,8 +3,8 @@ import { redirect, notFound } from 'next/navigation';
 import { requireAuth } from '@/server/auth';
 import { getWarehouseById } from '@/server/warehouses';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
-import { WarehouseForm } from '@/components/WarehouseForm';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { WarehouseForm } from '@/frontend/components/WarehouseForm';
 
 export default async function EditWarehousePage({ params }: { params: { id: string } }) {
   let user;

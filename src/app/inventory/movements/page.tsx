@@ -6,8 +6,8 @@ import { getMovementHistory } from '@/server/movements';
 import { getWarehouses } from '@/server/warehouses';
 import { getProducts } from '@/server/products';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
-import { MovementActionToolbar } from '@/components/MovementActionToolbar';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { MovementActionToolbar } from '@/frontend/components/MovementActionToolbar';
 import { MovementHistoryFilters } from '@/server/movements';
 import {
   History,

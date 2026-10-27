@@ -6,8 +6,8 @@ import { getWarehouses } from '@/server/warehouses';
 import { getProducts } from '@/server/products';
 import { requirePermission } from '@/server/auth';
 import { PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
-import { OrderForm } from '@/components/OrderForm';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { OrderForm } from '@/frontend/components/OrderForm';
 import { ShoppingCart, ChevronRight } from 'lucide-react';
 
 export default async function NewOrderPage() {

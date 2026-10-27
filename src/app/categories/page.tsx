@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { requireAuth } from '@/server/auth';
 import { getCategories } from '@/server/categories';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
+import { AppHeader } from '@/frontend/components/AppHeader';
 import { FolderTree, Plus, Folder, Package } from 'lucide-react';
 
 export default async function CategoriesPage() {

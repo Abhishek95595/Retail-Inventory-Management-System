@@ -5,8 +5,8 @@ import { redirect, notFound } from 'next/navigation';
 import { db } from '@/db';
 import { warehouses, products, suppliers } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { AppHeader } from '@/components/AppHeader';
-import { PurchaseOrderForm } from '@/components/PurchaseOrderForm';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { PurchaseOrderForm } from '@/frontend/components/PurchaseOrderForm';
 import { getPurchaseOrderById } from '@/server/purchasing';
 
 interface EditPOPageProps {

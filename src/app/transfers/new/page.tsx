@@ -6,8 +6,8 @@ import { getWarehouses } from '@/server/warehouses';
 import { getProducts } from '@/server/products';
 import { requirePermission } from '@/server/auth';
 import { PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
-import { TransferForm } from '@/components/TransferForm';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { TransferForm } from '@/frontend/components/TransferForm';
 import { ArrowLeftRight, ChevronRight } from 'lucide-react';
 
 export default async function NewTransferPage() {

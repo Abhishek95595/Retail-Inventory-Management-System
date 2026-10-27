@@ -5,7 +5,7 @@ import { requireAuth } from '@/server/auth';
 import { getSalesOrders } from '@/server/orders';
 import { getWarehouses } from '@/server/warehouses';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
+import { AppHeader } from '@/frontend/components/AppHeader';
 import {
   ShoppingCart,
   Plus,
@@ -20,6 +20,7 @@ import {
   PackageCheck,
   Boxes,
 } from 'lucide-react';
+import { formatINR } from '@/lib/currency';
 
 interface OrdersPageProps {
   searchParams: {
@@ -308,7 +309,7 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
                         {ord.itemCount} ({ord.totalQuantity} units)
                       </td>
                       <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-900">
-                        ${Number(ord.totalAmount).toFixed(2)}
+                        {formatINR(ord.totalAmount)}
                       </td>
                       <td className="py-3.5 px-4 text-slate-500">
                         {new Date(ord.createdAt).toLocaleDateString()}

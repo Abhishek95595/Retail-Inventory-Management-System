@@ -5,8 +5,8 @@ import { requireAuth } from '@/server/auth';
 import { getWarehouseById } from '@/server/warehouses';
 import { getInventoryBalances } from '@/server/inventory';
 import { hasPermission, PERMISSIONS } from '@/lib/permissions';
-import { AppHeader } from '@/components/AppHeader';
-import { WarehouseActions } from '@/components/WarehouseActions';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { WarehouseActions } from '@/frontend/components/WarehouseActions';
 import {
   ArrowLeft,
   Edit,

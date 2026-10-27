@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { getPurchaseOrders } from '@/server/purchasing';
 import { db } from '@/db';
 import { warehouses, suppliers } from '@/db/schema';
-import { AppHeader } from '@/components/AppHeader';
+import { AppHeader } from '@/frontend/components/AppHeader';
 import Link from 'next/link';
 import {
   Plus,
@@ -18,6 +18,7 @@ import {
   AlertTriangle,
   XCircle,
 } from 'lucide-react';
+import { formatINR } from '@/lib/currency';
 
 interface PurchasingPageProps {
   searchParams: {
@@ -262,7 +263,7 @@ export default async function PurchasingPage({ searchParams }: PurchasingPagePro
                         {order.totalQuantityReceived}
                       </td>
                       <td className="px-4 py-3 text-right font-bold text-slate-900 font-mono">
-                        ${order.totalCost}
+                        {formatINR(order.totalCost)}
                       </td>
                       <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
                         {new Date(order.createdAt).toLocaleDateString()}

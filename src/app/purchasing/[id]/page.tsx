@@ -3,8 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
 import { getPurchaseOrderById } from '@/server/purchasing';
-import { AppHeader } from '@/components/AppHeader';
-import { PurchaseOrderActions } from '@/components/PurchaseOrderActions';
+import { AppHeader } from '@/frontend/components/AppHeader';
+import { PurchaseOrderActions } from '@/frontend/components/PurchaseOrderActions';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -17,6 +17,7 @@ import {
   Truck,
   XCircle,
 } from 'lucide-react';
+import { formatINR } from '@/lib/currency';
 
 interface PurchaseOrderDetailPageProps {
   params: { id: string };
@@ -128,7 +129,9 @@ export default async function PurchaseOrderDetailPage({ params }: PurchaseOrderD
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
                 Total Order Cost
               </span>
-              <span className="text-2xl font-black text-slate-900 font-mono">${po.totalCost}</span>
+              <span className="text-2xl font-black text-slate-900 font-mono">
+                {formatINR(po.totalCost)}
+              </span>
             </div>
           </div>
 
@@ -230,10 +233,10 @@ export default async function PurchaseOrderDetailPage({ params }: PurchaseOrderD
                       {item.quantityOutstanding}
                     </td>
                     <td className="px-3 py-2.5 text-right font-mono text-slate-600">
-                      ${item.unitCost}
+                      {formatINR(item.unitCost)}
                     </td>
                     <td className="px-3 py-2.5 text-right font-mono font-bold text-slate-900">
-                      ${item.lineTotal}
+                      {formatINR(item.lineTotal)}
                     </td>
                   </tr>
                 ))}

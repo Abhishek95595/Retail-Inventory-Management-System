@@ -20,8 +20,9 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:check": "node --loader tsx src/db/check-connection.ts",
-    "db:seed:admin": "node --loader tsx src/db/seed-admin.ts"
+    "db:check": "npx tsx src/db/check-connection.ts",
+    "db:seed:admin": "npx tsx src/db/seed-admin.ts",
+    "db:seed:demo": "npx tsx src/db/seed-demo.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",
