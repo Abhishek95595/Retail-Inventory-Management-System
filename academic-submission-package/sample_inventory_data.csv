@@ -1,0 +1,9 @@
+SKU,Product Name,Category,Cost Price ($),Selling Price ($),On Hand Qty,Reserved Qty,Available Qty,Reorder Point,Line Valuation ($),Stock Status,Suggested Reorder
+"LAP-DELL-XPS13","Dell XPS 13 Laptop","Electronics",950.00,1299.99,18,3,15,10,17100.00,"ADEQUATE",0
+"LOGI-MX-MAS3S","Logitech MX Master 3S Mouse","Accessories",65.00,99.99,22,2,20,25,1430.00,"LOW_STOCK",30
+"MEC-KBD-RGB","Mechanical Gaming Keyboard RGB","Accessories",45.00,79.99,12,4,7,15,540.00,"CRITICAL_REORDER",23
+"MON-DELL-U2723","Dell UltraSharp 27"" 4K Monitor","Electronics",420.00,599.99,0,0,0,8,0.00,"OUT_OF_STOCK",16
+"CAB-USB-C-6FT","Braided USB-C Cable (2m)","Cables",4.50,14.99,120,10,110,50,540.00,"ADEQUATE",0
+"AUD-SONY-WH1000","Sony WH-1000XM5 Headphones","Audio",260.00,399.99,9,1,8,12,2340.00,"LOW_STOCK",16
+"ERG-STD-DESK","Electric Standing Desk Frame","Furniture",180.00,320.00,14,2,12,5,2520.00,"ADEQUATE",0
+"TEST-1806","Wireless Presenter Remote","Accessories",20.00,39.99,4,0,4,10,80.00,"CRITICAL_REORDER",16

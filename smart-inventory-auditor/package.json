@@ -1,0 +1,14 @@
+{
+  "name": "smart-inventory-stock-auditor",
+  "version": "1.0.0",
+  "description": "Smart Inventory Stock Auditor & Reorder Forecasting System (Academic Mini-Project)",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

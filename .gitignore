@@ -47,3 +47,9 @@ yarn-error.log*
 
 # Phase backup directories
 /rims-phase*-backup-*/
+
+# Subproject node_modules
+**/node_modules/
+.report_env/
+*.zip
+
